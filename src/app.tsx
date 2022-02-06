@@ -5,7 +5,7 @@ class App extends Component{
   render(){
     return(
       <div className="App">
-        <h1> Hello, World! Again. </h1>
+        <h1> Hello, World! Again. And again from TypeScript!</h1>
       </div>
     );
   }
