@@ -11,7 +11,11 @@ module.exports = {
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
         options: { 
-            presets: ["@babel/env", "@babel/preset-react", "@babel/preset-typescript"] 
+            presets: [
+              ["@babel/preset-env", {targets: {node: "current"}}],
+              "@babel/preset-react", 
+              "@babel/preset-typescript"
+            ] 
         }
       },
       {

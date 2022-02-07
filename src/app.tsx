@@ -1,11 +1,19 @@
 import React, { Component} from "react";
 import "./app.css";
 
-class App extends Component{
+interface AppProps {
+  name?: string
+}
+
+class App extends Component {
+  constructor(props: AppProps) {
+    super(props);
+  }
+
   render(){
     return(
       <div className="App">
-        <h1> Hello, World! Again. And again from TypeScript!</h1>
+        <h1>Hello, {(this.props.name) ? this.props.name : "World"}!</h1>
       </div>
     );
   }
