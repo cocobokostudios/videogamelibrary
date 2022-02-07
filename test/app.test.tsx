@@ -26,4 +26,11 @@ it("renders a thing", () => {
         render(<App name="DW" />, container);
     });
     expect(container.textContent).toBe("Hello, DW!");
-})
+});
+
+it("does something else", ()=> {
+    act(() => {
+        render(<App />, container);    
+    });
+    expect(true).toBe(true);
+});
