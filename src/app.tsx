@@ -1,15 +1,11 @@
-import React, { Component} from "react";
+import * as React from "react";
 import "./app.css";
 
 interface AppProps {
-  name?: string
+  name?: string;
 }
 
-class App extends Component {
-  constructor(props: AppProps) {
-    super(props);
-  }
-
+class App extends React.Component<AppProps> {
   render(){
     return(
       <div className="App">
