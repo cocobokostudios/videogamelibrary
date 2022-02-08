@@ -6,7 +6,8 @@
   "scripts": {
     "build": "webpack",
     "dev": "webpack serve",
-    "test": "jest"
+    "test": "jest",
+    "test:actions": "bin/act -j build" 
   },
   "repository": {
     "type": "git",
