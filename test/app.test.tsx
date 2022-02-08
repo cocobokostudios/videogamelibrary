@@ -2,9 +2,9 @@ import * as React from "react";
 import { render, unmountComponentAtNode } from "react-dom";
 import { act } from "react-dom/test-utils";
 
-import App from "../src/app";
+import App from "../src/components/app";
 
-let container = null;
+let container: HTMLDivElement = null;
 beforeEach(() => {
     container = document.createElement("div");
     document.body.appendChild(container);

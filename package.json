@@ -4,6 +4,7 @@
   "description": "A React application to manage a library of video games",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
     "dev": "webpack serve",
     "test": "jest"
   },
@@ -29,6 +30,8 @@
     "babel-jest": "^27.5.0",
     "babel-loader": "^8.2.3",
     "css-loader": "^6.6.0",
+    "html-loader": "^3.1.0",
+    "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.0",
     "style-loader": "^3.3.1",
     "webpack": "^5.68.0",
