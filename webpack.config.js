@@ -1,6 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const VersionFile = require("webpack-version-file");
 
 module.exports = {
   mode: "development",
@@ -55,6 +56,13 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: "Video Game Library",
       template: "src/index.html"
+    }),
+    new VersionFile({
+      output: "./dist/version.txt",
+      data: {
+        commit: require("child_process").execSync("git rev-parse --short HEAD").toString().trim()
+      },
+      templateString: "<%= name %>@<%= version %>+<%= commit %>\nBuild date: <%= buildDate %>"
     })
   ]
 };
