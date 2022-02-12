@@ -3,6 +3,16 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const VersionFile = require("webpack-version-file");
 
+/**
+ * @returns {string} semver version value based on current commit and value in package.json
+ */
+const getVersion = () => {
+  const commitSha = require("child_process").execSync("git rev-parse --short HEAD").toString().trim();
+  const packageJson = require("./package.json");
+
+  return `${packageJson.name}@${packageJson.version}+${commitSha}`;
+}
+
 module.exports = {
   mode: "development",
   entry: {
@@ -37,7 +47,7 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".js", ".jsx"] },
+  resolve: { extensions: ["*", ".js", ".jsx", ".tsx"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "/dist/",
@@ -55,14 +65,14 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: "Video Game Library",
-      template: "src/index.html"
+      template: "src/index.html",
+      meta: {
+        "version": getVersion()
+      }
     }),
     new VersionFile({
       output: "./dist/version.txt",
-      data: {
-        commit: require("child_process").execSync("git rev-parse --short HEAD").toString().trim()
-      },
-      templateString: "<%= name %>@<%= version %>+<%= commit %>\nBuild date: <%= buildDate %>"
+      templateString: getVersion()
     })
   ]
 };
