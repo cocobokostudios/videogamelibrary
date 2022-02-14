@@ -35,7 +35,7 @@ it("returns 'n/a' if meta tag is not present in HTML head", async () => {
     render(<AppVersion />);
 
     // act 
-    const expectedValue = "N/A";
+    const expectedValue = "0.0.0-unknown";
     let resultElement: HTMLElement = null;
     await waitFor(() => {
         resultElement = screen.getByText(expectedValue);    // gets the element by the expected string value

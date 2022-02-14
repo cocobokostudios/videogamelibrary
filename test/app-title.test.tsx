@@ -1,13 +1,48 @@
-import { act, cleanup, render, waitFor, screen } from "@testing-library/react";
+import { act, cleanup, render, waitFor, screen, within } from "@testing-library/react";
+import "@testing-library/jest-dom";
 import * as React from "react";
-import { unmountComponentAtNode } from "react-dom";
 
-import AppTitle from "../src/components/app-title";
+import AppTitle, { APP_TITLE_TESTID } from "../src/components/app-title";
+import { APP_VERSION_TESTID } from "../src/components/app-version";
 
 afterEach(cleanup);
 
-it.todo("displays the title provided");
+it("displays the title provided", async ()=> {
+    // arrange
+    const expectedTitle = "Hello Title!";
+    render(<AppTitle title={expectedTitle} />);
 
-it.todo("displays the version number");
+    // act
+    await waitFor(() => screen.getByRole("heading"));
 
-it.todo("displays a default title if none is provided");
+    // assert
+    expect(screen.getByRole("heading")).toHaveTextContent(expectedTitle);
+});
+
+it("displays a default title if none is provided", async ()=> {
+    // arrange
+    render(<AppTitle />);
+
+    // act
+    let testTarget;
+    await waitFor(() => {
+        testTarget = screen.getByTestId(APP_TITLE_TESTID);
+    });
+
+    // assert
+    expect(testTarget).toHaveTextContent("Video Game Library");
+});
+
+it("renders the <AppVersion />", async ()=> {
+    // arrange
+    render(<AppTitle />);
+
+    // act
+    let testTarget;
+    await waitFor(() => {
+        testTarget = screen.getByTestId(APP_TITLE_TESTID);
+    });
+
+    // assert
+    expect(within(testTarget).getAllByTestId(APP_VERSION_TESTID).length).toEqual(1);
+});

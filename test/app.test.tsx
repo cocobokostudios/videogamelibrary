@@ -16,7 +16,7 @@ afterEach(() => {
     container = null;
 });
 
-it("renders a thing", () => {
+it.skip("renders a thing", () => {
     act(() => {
         render(<App />, container);
     });
@@ -28,7 +28,7 @@ it("renders a thing", () => {
     expect(container.textContent).toBe("Hello, DW!");
 });
 
-it("does something else", ()=> {
+it.skip("does something else", ()=> {
     act(() => {
         render(<App />, container);    
     });
