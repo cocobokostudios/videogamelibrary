@@ -1,46 +1,82 @@
 import { act, cleanup, render, waitFor, screen } from "@testing-library/react";
+import "@testing-library/jest-dom";
+
 import * as React from "react";
-import AppVersion from "../src/components/app-version";
+import AppVersion, { APP_VERSION_TESTID } from "../src/components/app-version";
 
-afterEach(cleanup);
+import packageJson from "../package.json";
 
-it("returns content from meta tag with name 'version'", async () => {
-    const expectedValue = "0.1.2-test+q1w2e34";
-
-    // arrange
-    // inject meta tag 
+const expectedValue = "videogamelibrary@0.1.2-test+q1w2e34";
+beforeEach(()=> {
     let metaVersion = document.createElement('meta');
     metaVersion.name = "version";
     metaVersion.content = expectedValue;
     document.getElementsByTagName('head')[0].appendChild(metaVersion);
+});
+afterEach(()=> {
+    cleanup();
+});
+
+it("returns content from meta tag with name 'version'", async () => {
+    // arrange
     render(<AppVersion />);
 
     // act
-    const validVersion = /^(\d.\d.\d)(-[A-Za-z0-9\.]+)?(\+[A-Za-z0-9]+)?/i;
+    const validVersion = /^(\w*\d*\@)(\d.\d.\d)(-[A-Za-z0-9\.]+)?(\+[A-Za-z0-9]+)?/i;
     await waitFor(() => screen.getByText(validVersion));
 
     // assert
     expect(screen.getByText(validVersion).textContent).toEqual(expectedValue);
 });
 
-it("returns 'n/a' if meta tag is not present in HTML head", async () => {
+it("returns 'unknown value' if meta tag is not present in HTML head", async () => {
     // arrange
     // clear meta tags
-    let metaVersion = document.getElementsByTagName("meta");
-    if(metaVersion.length > 0) {
-        for(let i=0; i<metaVersion.length; i++) {
-            document.getElementsByTagName('head')[0].removeChild(metaVersion.item(i));
-        }
-    }
+    let metaVersion = document.querySelectorAll("meta[name='version']");
+    metaVersion.forEach((el)=> {
+        el.remove();
+    });
     render(<AppVersion />);
 
     // act 
-    const expectedValue = "0.0.0-unknown";
+    const expectedValue = "unknown@0.0.0-unknown";
     let resultElement: HTMLElement = null;
     await waitFor(() => {
-        resultElement = screen.getByText(expectedValue);    // gets the element by the expected string value
+        resultElement = screen.getByTestId(APP_VERSION_TESTID);    // gets the element by the expected string value
     });
 
     // assert
-    expect(resultElement).not.toBeFalsy();
+    expect(resultElement).toHaveTextContent(expectedValue);
+});
+
+it("displays package name by default", async ()=> {
+    // arrange
+    const packageName = packageJson.name;
+    render(<AppVersion />);
+
+    // act
+    let testTarget;
+    await waitFor(()=> {
+        testTarget = screen.getByTestId(APP_VERSION_TESTID);
+    });
+
+    // assert
+    expect(testTarget).toHaveTextContent(packageJson.name);
+    expect(testTarget).toHaveTextContent(/^(\w*\d*\@)/i);
+});
+
+it("removes the library name if flag is set", async ()=> {
+    // arrange
+    const packageName = packageJson.name;
+    render(<AppVersion includeName={false} />);
+
+    // act
+    let testTarget;
+    await waitFor(()=> {
+        testTarget = screen.getByTestId(APP_VERSION_TESTID);
+    });
+
+    // assert
+    expect(testTarget).not.toHaveTextContent(packageJson.name);
+    expect(testTarget).not.toHaveTextContent(/^(\w*\d*\@)/i);
 });

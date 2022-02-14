@@ -11,7 +11,7 @@ interface AppTitleProps {
 const AppTitle : React.FunctionComponent<AppTitleProps> = ((props) => {
     const displayTitle = (props.title) ? props.title : DEFAULT_TITLE;
     return (
-        <h1 data-testid={APP_TITLE_TESTID}>{displayTitle} [<AppVersion />]</h1>
+        <h1 data-testid={APP_TITLE_TESTID}>{displayTitle} [<AppVersion includeName={false} />]</h1>
     );
 });
 export default AppTitle;
