@@ -11,10 +11,10 @@ class App extends React.Component<AppProps> {
   render(){
     return(
       <>
-        <header>
+        <header data-testid="app_header">
           <AppTitle />
         </header>
-        <main>
+        <main data-testid="app_main">
           Application goes here
         </main>
       </>
