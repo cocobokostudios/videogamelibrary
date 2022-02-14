@@ -1,7 +1,5 @@
 import { act, cleanup, render, waitFor, screen } from "@testing-library/react";
 import * as React from "react";
-import { unmountComponentAtNode } from "react-dom";
-import App from "../src/components/app";
 import AppVersion from "../src/components/app-version";
 
 afterEach(cleanup);
