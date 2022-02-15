@@ -5,6 +5,7 @@ import * as React from "react";
 
 import App from "../src/components/app";
 import { APP_TITLE_TESTID } from "../src/components/app-title";
+import { APP_LOGO_TESTID } from "../src/components/app-logo";
 
 // setup & teardown
 afterEach(cleanup);
@@ -20,16 +21,7 @@ it("displays the title and logo in the header", async ()=> {
     let appHeader = screen.getByTestId("app_header");
     
     expect(within(appHeader).getAllByTestId(APP_TITLE_TESTID).length).toEqual(1);
-    expect(within(appHeader).getAllByTestId("app_logo").length).toEqual(1);
+    expect(within(appHeader).getAllByTestId(APP_LOGO_TESTID).length).toEqual(1);
 });
 
-it("app logo has alt defined", async ()=> {
-    // arrange
-    render(<App />);
 
-    // act
-    await waitFor(() => screen.getAllByRole("img"));
-
-    // assert
-    expect(screen.getByTestId("app_logo")).toHaveAttribute("alt");
-});
