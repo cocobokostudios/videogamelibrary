@@ -22,7 +22,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|tsx)$/,
+        test: /\.(js|jsx|tsx)$/i,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
         options: { 
@@ -34,8 +34,13 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
-        use: ["style-loader", "css-loader"]
+        test: /\.css$/i,
+        use: [
+          "style-loader",
+          {
+            loader: "css-loader"
+          }
+        ]
       },
       {
         test: /\.(png|jpg|jpeg)$/i,
