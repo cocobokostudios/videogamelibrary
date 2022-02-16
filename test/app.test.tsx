@@ -1,36 +1,27 @@
+import { act, cleanup, render, waitFor, screen, within } from "@testing-library/react";
+import "@testing-library/jest-dom";
+
 import * as React from "react";
-import { render, unmountComponentAtNode } from "react-dom";
-import { act } from "react-dom/test-utils";
 
 import App from "../src/components/app";
+import { APP_TITLE_TESTID } from "../src/components/app-title";
+import { APP_LOGO_TESTID } from "../src/components/app-logo";
 
-let container: HTMLDivElement = null;
-beforeEach(() => {
-    container = document.createElement("div");
-    document.body.appendChild(container);
+// setup & teardown
+afterEach(cleanup);
+
+it("displays the title and logo in the header", async ()=> {
+    // arrange
+    render(<App />);
+
+    // act
+    await waitFor(() => screen.getAllByRole("heading"));
+
+    // assert
+    let appHeader = screen.getByTestId("app_header");
+    
+    expect(within(appHeader).getAllByTestId(APP_TITLE_TESTID).length).toEqual(1);
+    expect(within(appHeader).getAllByTestId(APP_LOGO_TESTID).length).toEqual(1);
 });
 
-afterEach(() => {
-    unmountComponentAtNode(container);
-    container.remove();
-    container = null;
-});
 
-it("renders a thing", () => {
-    act(() => {
-        render(<App />, container);
-    });
-    expect(container.textContent).toBe("Hello, World!");
-
-    act(() => {
-        render(<App name="DW" />, container);
-    });
-    expect(container.textContent).toBe("Hello, DW!");
-});
-
-it("does something else", ()=> {
-    act(() => {
-        render(<App />, container);    
-    });
-    expect(true).toBe(true);
-});

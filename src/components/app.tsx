@@ -1,6 +1,9 @@
 import * as React from "react";
-import "../style/app.css";
-import logo from "../assets/logo.png";
+
+import styles from "../styles/app.module.css";
+
+import AppTitle from "./app-title";
+import AppLogo from "./app-logo";
 
 interface AppProps {
   name?: string;
@@ -9,10 +12,15 @@ interface AppProps {
 class App extends React.Component<AppProps> {
   render(){
     return(
-      <div className="App">
-        <h1>Hello, {(this.props.name) ? this.props.name : "World"}!</h1>
-        <img src={logo} alt="Pixelated image of a Super Nintendo controller plugged into the HTML5 logo through a black cable" />
-      </div>
+      <>
+        <header data-testid="app_header" className={styles.AppHeader} >
+          <AppLogo />
+          <AppTitle />
+        </header>
+        <main data-testid="app_main">
+          Application goes here
+        </main>
+      </>
     );
   }
 }
