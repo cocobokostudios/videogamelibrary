@@ -1,0 +1,10 @@
+.CollectionExplorer {
+    background-color: blueviolet;
+}
+
+@media screen and (min-width: 768px) {
+    .CollectionExplorer  {
+      background-color: coral;
+    }
+  }
+  

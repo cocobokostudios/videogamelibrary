@@ -4,6 +4,7 @@ import styles from "../styles/app.module.css";
 
 import AppTitle from "./app-title";
 import AppLogo from "./app-logo";
+import CollectionExplorer from "./collection-explorer";
 
 interface AppProps {
   name?: string;
@@ -18,7 +19,7 @@ class App extends React.Component<AppProps> {
           <AppTitle />
         </header>
         <main data-testid="app_main">
-          Application goes here
+          <CollectionExplorer />
         </main>
       </>
     );
