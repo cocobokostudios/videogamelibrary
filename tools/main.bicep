@@ -16,5 +16,6 @@ module staticWebApp './staticwebapp.bicep' = {
   scope: rg
   params: {
     targetLocation: rg.location
+    projectName: projectName
   }
 }
