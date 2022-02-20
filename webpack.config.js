@@ -55,7 +55,6 @@ module.exports = {
   resolve: { extensions: ["*", ".js", ".jsx", ".tsx"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
-    publicPath: "/dist/",
     filename: "videogamelibrary.js",
     clean: true
   },
