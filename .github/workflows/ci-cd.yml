@@ -26,7 +26,7 @@ jobs:
     - run: yarn test
   deploy:
     name: Deploy
-    if: github.ref == 'refs/heads/main' && github.event_name == 'pull_request' && github.event.action != 'closed'
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
