@@ -36,7 +36,7 @@ jobs:
     - uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - run: . ./tools/az-deploy.sh ${{ GH_WORKFLOW_TOKEN }}
+    - run: . ./tools/az-deploy.sh ${{ secrets.GH_WORKFLOW_TOKEN }}
 
 
        
