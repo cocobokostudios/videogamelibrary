@@ -12,7 +12,8 @@ env:
   STATICWEBAPPNAME: vgl-app
 
 jobs:
-  max-parallel: 1
+  strategy:
+    max-parallel: 1
   build:
     name: Build
     runs-on: ubuntu-latest
