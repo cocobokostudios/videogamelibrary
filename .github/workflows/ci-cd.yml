@@ -2,9 +2,12 @@ name: CI/CD
 on:
   push:
     branches:
-      - main
       - ft/*
       - hf/*
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
 
 jobs:
   build:
@@ -22,4 +25,18 @@ jobs:
     - run: yarn install
     - run: yarn run build
     - run: yarn test
+  deploy:
+    name: Deploy
+    if: github.ref == 'refs/heads/ft/app-deployment'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: true
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - run: . ./tools/az-deploy.sh ${{ GH_WORKFLOW_TOKEN }}
+
+
        

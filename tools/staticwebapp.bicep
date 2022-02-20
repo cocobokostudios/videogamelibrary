@@ -3,12 +3,13 @@ param projectName string = 'videogamelibrary'
 param targetLocation string = resourceGroup().location
 
 @secure()
-param respositoryToken string
+param repositoryToken string
 
 resource staticWebApp 'Microsoft.Web/staticSites@2021-03-01' = {
   name: vglAppName
   location: targetLocation
   sku: {
+    name: 'Free'
     tier: 'Free'
   }
   tags: {
@@ -18,7 +19,7 @@ resource staticWebApp 'Microsoft.Web/staticSites@2021-03-01' = {
     allowConfigFileUpdates: false
     branch: 'main'
     repositoryUrl: 'https://github.com/cocobokostudios/videogamelibrary'
-    repositoryToken: respositoryToken
+    repositoryToken: repositoryToken
     provider: 'GitHub'
     stagingEnvironmentPolicy: 'Enabled'
     buildProperties: {

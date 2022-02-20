@@ -1,3 +1,10 @@
 #!/usr/bin/bash
+
 DATE_VALUE=`date +"%Y-%b-%d_%H%M%S"`
-az deployment sub create --template-file ./tools/main.bicep --location eastus2 --name videogamelibrary_${DATE_VALUE}
+PARAMS="swaRepositoryToken=$1"
+
+az deployment sub create \
+    --name videogamelibrary_${DATE_VALUE} \
+    --location eastus2 \
+    --template-file ./tools/main.bicep \
+    --parameters $PARAMS

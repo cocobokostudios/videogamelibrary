@@ -1,6 +1,9 @@
 param projectName string = 'videogamelibrary'
 param targetLocation string = 'eastus2'
 
+@secure()
+param swaRepositoryToken string
+
 targetScope = 'subscription'
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
@@ -17,5 +20,6 @@ module staticWebApp './staticwebapp.bicep' = {
   params: {
     targetLocation: rg.location
     projectName: projectName
+    repositoryToken: swaRepositoryToken
   }
 }
