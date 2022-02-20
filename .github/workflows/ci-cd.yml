@@ -49,7 +49,7 @@ jobs:
         inlineScript: |
           APIKEY=$(az staticwebapp secrets list --name '${{ env.STATICWEBAPPNAME }}' | jq -r '.properties.apiKey')
           echo "::set-output name=APIKEY::$APIKEY"
-    - name: Static Web App - build and deploy
+    - name: Deploy Application
       id: static_web_app_build_and_deploy
       uses: Azure/static-web-apps-deploy@v1
       with:
@@ -60,7 +60,7 @@ jobs:
         app_location: '.' # App source code path
         output_location: './dist' # Built app content directory - optional
 
-    - name: Static Web App - get preview URL
+    - name: Get Preview URL
       id: static_web_app_preview_url
       uses: azure/CLI@v1
       with:
@@ -79,7 +79,7 @@ jobs:
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
-    name: Clean-up Pull Request staging environment
+    name: Clean-Up PR Staging Environment
     steps:
       - name: Azure Login
         uses: azure/login@v1
@@ -100,7 +100,3 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ steps.apikey.outputs.APIKEY }}
           action: 'close'
-
-
-
-       
