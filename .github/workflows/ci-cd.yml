@@ -58,6 +58,30 @@ jobs:
         app_build_command: 'yarn run build'
         app_location: '.' # App source code path
         output_location: './dist' # Built app content directory - optional
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Clean-up Pull Request staging environment
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get API key for deployment
+        id: apikey
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            APIKEY=$(az staticwebapp secrets list --name '${{ env.STATICWEBAPPNAME }}' | jq -r '.properties.apiKey')
+            echo "::set-output name=APIKEY::$APIKEY"
+
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ steps.apikey.outputs.APIKEY }}
+          action: 'close'
 
 
 
