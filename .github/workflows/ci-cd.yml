@@ -2,8 +2,7 @@ name: CI/CD
 on:
   push:
     branches:
-      - ft/*
-      - hf/*
+      - main
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
