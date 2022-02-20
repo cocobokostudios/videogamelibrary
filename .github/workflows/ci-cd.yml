@@ -30,6 +30,7 @@ jobs:
   deploy:
     name: Deploy
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    needs: build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -48,7 +49,7 @@ jobs:
         inlineScript: |
           APIKEY=$(az staticwebapp secrets list --name '${{ env.STATICWEBAPPNAME }}' | jq -r '.properties.apiKey')
           echo "::set-output name=APIKEY::$APIKEY"
-    - name: Static Web App - build and deploy
+    - name: Deploy Application
       id: static_web_app_build_and_deploy
       uses: Azure/static-web-apps-deploy@v1
       with:
@@ -59,6 +60,43 @@ jobs:
         app_location: '.' # App source code path
         output_location: './dist' # Built app content directory - optional
 
+    - name: Get Preview URL
+      id: static_web_app_preview_url
+      uses: azure/CLI@v1
+      with:
+        inlineScript: |
+          DEFAULTHOSTNAME=$(az staticwebapp show -n '${{ env.STATICWEBAPPNAME }}' | jq -r '.defaultHostname')
+          echo $DEFAULTHOSTNAME
 
+          PREVIEW_URL="https://${DEFAULTHOSTNAME/.[1-9]./-${{github.event.pull_request.number }}.${{ env.LOCATION }}.1.}"
+          echo $PREVIEW_URL
 
-       
+          echo "::set-output name=PREVIEW_URL::$PREVIEW_URL"
+
+    outputs:
+      preview-url: ${{steps.static_web_app_preview_url.outputs.PREVIEW_URL}}
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Clean-Up PR Staging Environment
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get API key for deployment
+        id: apikey
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            APIKEY=$(az staticwebapp secrets list --name '${{ env.STATICWEBAPPNAME }}' | jq -r '.properties.apiKey')
+            echo "::set-output name=APIKEY::$APIKEY"
+
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ steps.apikey.outputs.APIKEY }}
+          action: 'close'
