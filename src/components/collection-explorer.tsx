@@ -1,12 +1,12 @@
 import * as React from "react";
-import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps } from "@fluentui/react";
-import { initializeIcons } from "@fluentui/react";
+import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps, DialogFooter, PrimaryButton } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
 
 export const COLLECTION_EXPLORER_TESTID = "collection-explorer";
 export const COLLECTION_EXPLORER_COMMAND_BAR_TESTID = "collection-explorer_commandbar";
+export const COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID = "collection-explorer_loadCollectionDialog";
 
 const CollectionExplorer : React.FunctionComponent = () =>  {
     const [hideLoadDialog, { toggle: toggleHideLoadDialog }] = useBoolean(true);
@@ -28,10 +28,18 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
             iconProps: { iconName: "Upload" },
             onClick: toggleHideLoadDialog
         }
-    ]
+    ];
 
-    // setup react icons
-    initializeIcons();
+    const onFileInputChange = async (e:React.SyntheticEvent) => {
+        e.preventDefault();
+
+        // check for files
+        const fileInput: HTMLInputElement = e.currentTarget as HTMLInputElement;
+        if(fileInput && fileInput.files) {
+            const files: FileList = fileInput.files;
+            console.log(await files[0].text()); // TODO: parse and load into local storage
+        } 
+    }
 
     return (
         <>
@@ -46,7 +54,13 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
             hidden={hideLoadDialog}
             onDismiss={toggleHideLoadDialog}
             dialogContentProps={loadDialogContentProps}>
-                This is the load collection dialog.
+                Select a file to load your collection.
+                <input id="loadCollectionInput"
+                    type="file" 
+                    onChange={onFileInputChange} />
+            <DialogFooter>
+                <PrimaryButton onClick={toggleHideLoadDialog} text="Load" />
+            </DialogFooter>
         </Dialog>
         </>
     )
