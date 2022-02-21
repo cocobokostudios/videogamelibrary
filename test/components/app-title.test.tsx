@@ -2,8 +2,8 @@ import { act, cleanup, render, waitFor, screen, within } from "@testing-library/
 import "@testing-library/jest-dom";
 import * as React from "react";
 
-import AppTitle, { APP_TITLE_TESTID } from "../src/components/app-title";
-import { APP_VERSION_TESTID } from "../src/components/app-version";
+import AppTitle, { APP_TITLE_TESTID } from "../../src/components/app-title";
+import { APP_VERSION_TESTID } from "../../src/components/app-version";
 
 afterEach(cleanup);
 

@@ -2,9 +2,9 @@ import { act, cleanup, render, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import * as React from "react";
-import AppVersion, { APP_VERSION_TESTID } from "../src/components/app-version";
+import AppVersion, { APP_VERSION_TESTID } from "../../src/components/app-version";
 
-import packageJson from "../package.json";
+import packageJson from "../../package.json";
 
 const expectedValue = "videogamelibrary@0.1.2-test+q1w2e34";
 beforeEach(()=> {

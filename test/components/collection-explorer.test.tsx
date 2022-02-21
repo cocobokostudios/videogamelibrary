@@ -3,7 +3,7 @@ import "@testing-library/jest-dom";
 
 import * as React from "react";
 
-import CollectionExplorer, { COLLECTION_EXPLORER_COMMAND_BAR_TESTID } from "../src/components/collection-explorer";
+import CollectionExplorer, { COLLECTION_EXPLORER_COMMAND_BAR_TESTID } from "../../src/components/collection-explorer";
 
 afterEach(cleanup);
 

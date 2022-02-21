@@ -3,9 +3,9 @@ import "@testing-library/jest-dom";
 
 import * as React from "react";
 
-import App from "../src/components/app";
-import { APP_TITLE_TESTID } from "../src/components/app-title";
-import { APP_LOGO_TESTID } from "../src/components/app-logo";
+import App from "../../src/components/app";
+import { APP_TITLE_TESTID } from "../../src/components/app-title";
+import { APP_LOGO_TESTID } from "../../src/components/app-logo";
 
 // setup & teardown
 afterEach(cleanup);
