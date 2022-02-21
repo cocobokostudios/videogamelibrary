@@ -5754,9 +5754,9 @@ webpack-sources@^3.2.3:
   resolved "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.3.tgz"
   integrity sha512-/DyMEOrDgLKKIG0fmvtz+4dUX/3Ghozwgm6iPp8KRhvn+eQf9+Q7GWxVNMk3+uCPWfdXYC4ExGBckIXdFEfH1w==
 
-"webpack-version-file@git+https://github.com/cocobokostudios/webpack-version-file#main":
+"webpack-version-file@https://github.com/cocobokostudios/webpack-version-file#main":
   version "0.1.6"
-  resolved "git+ssh://git@github.com/cocobokostudios/webpack-version-file.git#674f9b47710b8f20fe52f6c520e145d25e5dd310"
+  resolved "https://github.com/cocobokostudios/webpack-version-file#674f9b47710b8f20fe52f6c520e145d25e5dd310"
   dependencies:
     chalk "^2.1.0"
     ejs "^2.5.2"
