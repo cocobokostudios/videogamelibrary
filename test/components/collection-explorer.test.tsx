@@ -3,6 +3,8 @@ import "@testing-library/jest-dom";
 
 import * as React from "react";
 
+import testCollection from "../data/test-collection.json";
+
 import CollectionExplorer, { 
         COLLECTION_EXPLORER_COMMAND_BAR_TESTID,
         COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID 
@@ -36,6 +38,4 @@ it("displays a load collection dialog when load button", async ()=> {
     expect(loadDialog).toBeTruthy();
 });
 
-it.skip("reads the file selected into local storage", async ()=> {
-
-});
+it.todo("handles the change event for the load collection file input");
