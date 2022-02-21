@@ -1,16 +1,16 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://cocobokostudios.com/videogamelibrary/game.schema.json",
     "title": "Game",
     "description": "A game in a video game library collection",
     "type": "object",
     "required": [
-        "game-id",
+        "gameId",
         "title",
         "platform"
     ],
     "properties": {
-        "game-id": {
+        "gameId": {
             "type": "string"
         },
         "title": {
