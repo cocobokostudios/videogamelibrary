@@ -1,52 +1,54 @@
 import * as React from "react";
-import { CommandBar, ICommandBarItemProps } from "@fluentui/react";
-import { registerIcons } from '@fluentui/react/lib/Styling';
+import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps } from "@fluentui/react";
 import { initializeIcons } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
 
 export const COLLECTION_EXPLORER_TESTID = "collection-explorer";
-export const COLLECTION_EXPLORER_COMMAND_BAR_TESTID = "collection-explorere_commandbar";
+export const COLLECTION_EXPLORER_COMMAND_BAR_TESTID = "collection-explorer_commandbar";
 
-const commandItems: ICommandBarItemProps[] = [
-    {
-        key: "fileCommandItem",
-        text: "File",
-        iconProps: { iconName: "DocumentManagement" }
-    },
-    {
-        key: "exploreCommandItem",
-        text: "Explore",
-        iconProps: { iconName: "ExploreData" }
-    }
-]
-
-interface CollectionExplorerProps {
-    sampleMsg?: string;
-}
-
-interface CollectionExplorerState {
-    sampleCount?: number;
-}
-
-class CollectionExplorer extends React.Component<CollectionExplorerProps, CollectionExplorerState> {
-    state: CollectionExplorerState = {
-        sampleCount: 0
+const CollectionExplorer : React.FunctionComponent = () =>  {
+    const [hideLoadDialog, { toggle: toggleHideLoadDialog }] = useBoolean(true);
+    const loadDialogContentProps: IDialogContentProps = {
+        title: "Load Collection",
+        showCloseButton: true,
+        closeButtonAriaLabel: "Close"
     };
 
-    render() {
-        //const displayMessage = (this.props.sampleMsg) ? this.props.sampleMsg : "Welcome to the collection explorer";
+    const commandItems: ICommandBarItemProps[] = [
+        {
+            key: "exploreCommandItem",
+            text: "Explore",
+            iconProps: { iconName: "ExploreData" }
+        },
+        {
+            key: "loadCommandItem",
+            text: "Load",
+            iconProps: { iconName: "Upload" },
+            onClick: toggleHideLoadDialog
+        }
+    ]
 
-        // setup react icons
-        initializeIcons();
+    // setup react icons
+    initializeIcons();
 
-        return (
-            <section data-testid={COLLECTION_EXPLORER_TESTID} className={styles.CollectionExplorer} >
-                <header>
-                    <CommandBar data-testid={COLLECTION_EXPLORER_COMMAND_BAR_TESTID} items={commandItems} />
-                </header>
-            </section>
-        )
-    }
+    return (
+        <>
+        <section data-testid={COLLECTION_EXPLORER_TESTID} className={styles.CollectionExplorer} >
+            <header>
+                <CommandBar data-testid={COLLECTION_EXPLORER_COMMAND_BAR_TESTID} items={commandItems} />
+            </header>
+            <main>
+            </main>
+        </section>
+        <Dialog
+            hidden={hideLoadDialog}
+            onDismiss={toggleHideLoadDialog}
+            dialogContentProps={loadDialogContentProps}>
+                This is the load collection dialog.
+        </Dialog>
+        </>
+    )
 }
 export default CollectionExplorer;
