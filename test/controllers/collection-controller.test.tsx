@@ -5,6 +5,10 @@ import Game from "../../src/models/game";
 import validCollectionData from "../data/test-collection.json";
 import invalidCollectionData from "../data/test-invalid-collection.json";
 
+beforeEach(()=> {
+    CollectionController.resetInstance();
+});
+
 it("returns a singleton instance", ()=> {
     // arrange & act
     const target = CollectionController.getInstance();
@@ -12,6 +16,18 @@ it("returns a singleton instance", ()=> {
 
     // assert
     expect(Object.is(target, otherTarget)).toBe(true);
+});
+
+it("can have the singleton instance reset", ()=> {
+    // arrange
+    const previous = CollectionController.getInstance();
+
+    // act
+    CollectionController.resetInstance();
+    const updated = CollectionController.getInstance();
+
+    // assert
+    expect(Object.is(previous, updated)).toBe(false);
 });
 
 it("initializes with an empty collection", ()=> {
@@ -23,52 +39,56 @@ it("initializes with an empty collection", ()=> {
     expect(target.collection.length).toEqual(0);
 });
 
-it("loads JSON data from file", async ()=> {
+it("loads JSON string from file and loads from JSON", async ()=> {
     // arrange
-    const testFile = new File([JSON.stringify(validCollectionData)], "collection.json");
+    const testFileContent = JSON.stringify(validCollectionData);
+    const testFile = new File([testFileContent], "collection.json");
+    testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
+    
     const target = CollectionController.getInstance();
-    target.loadCollectionFromJSON = jest.fn(x => 0);    // mock dependency
+    
+    target.loadCollectionFromJSON = jest.fn((x: string) => Promise.resolve(0));
 
     // act
     const result = await target.loadCollectionFromFile(testFile);
 
     // assert
     expect(result).toEqual(0);
-    expect(target.collection).toStrictEqual(validCollectionData);
-    expect(target.loadCollectionFromJSON).toBeCalled();
+    expect(target.loadCollectionFromJSON).toBeCalledTimes(1);
 });
 
-it("loads JSON objects into collection", ()=> {
+it("loads JSON objects from string and attempts to load as collection", async ()=> {
     // arrange
     const target = CollectionController.getInstance();
-    target.loadCollection = jest.fn(x => 0);    // mock dependent function
     const testData = JSON.stringify(validCollectionData);
 
+    target.loadCollection = jest.fn((x: Array<Game>)=> Promise.resolve(0));
+    
     // act
-    const result = target.loadCollectionFromJSON(testData);
+    const result = await target.loadCollectionFromJSON(testData);
 
     // assert
     expect(result).toBe(0);
     expect(target.loadCollection).toBeCalledTimes(1);
 });
 
-it("loads all valid games into the in-memory collection", ()=> {
+it("loads all valid games into the in-memory collection", async ()=> {
     // arrange
     const target = CollectionController.getInstance();
 
     // act
-    const result = target.loadCollection(validCollectionData);
+    const result = await target.loadCollection(validCollectionData);
 
     // assert
     expect(result).toEqual(0);
     expect(target.collection.length).toEqual(validCollectionData.length);
 });
 
-it("saves a game collection from memory into local storage", ()=> {
+it("saves a game collection from memory into local storage", async ()=> {
     // arrange
     const target = CollectionController.getInstance();
     const expectedKey = `${CollectionController.STORAGE_PREFIX}_collection`;
-    target.loadCollection(validCollectionData);
+    await target.loadCollection(validCollectionData);
 
     // act
     target.saveCollection();

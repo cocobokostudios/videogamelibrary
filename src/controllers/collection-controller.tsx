@@ -4,11 +4,10 @@ class CollectionController {
     
     public static readonly STORAGE_PREFIX = "vgl";
 
-    // singleton pattern
-    private static instance: CollectionController;
     private constructor() { 
         this.collection = new Array<Game>();
     }   
+    private static instance: CollectionController = new CollectionController();
 
     public collection: Array<Game>;
     
@@ -17,11 +16,15 @@ class CollectionController {
      * @returns {CollectionController} Singleton instance of CollectionController
      */
     static getInstance() {
-        if(!CollectionController.instance) {
-            CollectionController.instance = new CollectionController();
-        }
-
         return CollectionController.instance;
+    }
+
+    /**
+     * Resets the current instance of CollectionController to a new instance.
+     * @see {@function getInstance} for retrieving instance.
+     */
+    static resetInstance() {
+        CollectionController.instance = new CollectionController();
     }
 
     /**
@@ -30,6 +33,7 @@ class CollectionController {
      */
     async loadCollectionFromFile(file: File) {
         const fileContent = await file.text();
+
         return this.loadCollectionFromJSON(fileContent);
     }
 
@@ -38,7 +42,7 @@ class CollectionController {
      * @param collection JSON array of {@type Game} objects.
      * @returns {number} Returns Number of invalid game objects read from the collection.
      */
-    loadCollectionFromJSON(collection: string) {
+    async loadCollectionFromJSON(collection: string) {
         const parsedCollection: Array<Game> = JSON.parse(collection)
         // TODO: get invalid entries
         return this.loadCollection(parsedCollection);
@@ -49,7 +53,7 @@ class CollectionController {
      * @param collection {Array<Game>} Array of {@type Game} objects to replace the current collection.
      * @returns {number} Number of invalid game objects from imported collection.
      */
-    loadCollection(collection: Array<Game>) {
+    async loadCollection(collection: Array<Game>) {
         this.collection = collection;
         return 0;   // TODO: get invalid entries
     }
