@@ -1,4 +1,19 @@
+import { mock } from "jest-mock-extended";
+
 import Game from "../../src/models/game";
+import ILogger from "../../src/utils/ILogger";
+
+beforeEach(()=> {
+    Game.logger = mock<ILogger>();
+});
+
+it("can be instantiated", ()=> {
+    // arrange & act
+    const target: Game = new Game();  
+
+    // assert
+    expect(target).toBeInstanceOf(Game);
+});
 
 it("can validate JSON string against the JSON schema", ()=> {
     // arrange
@@ -42,4 +57,5 @@ it("returns false on invalid JSON string", ()=> {
 
     // assert
     expect(result).toBe(false);
+    expect(Game.logger.warn).toBeCalled();
 });

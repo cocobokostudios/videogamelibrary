@@ -1,10 +1,20 @@
-import Ajv, { JSONSchemaType } from "ajv";
+import Ajv from "ajv";
+
+import ILogger from "../utils/ILogger";
+import ConsoleLogger from "../utils/ConsoleLogger";
 import * as GameSchema from "../schemas/game.schema.json";
 
 class Game {
     public game_id: string;
     public title: string;
     public platform: string;
+    
+    public static logger: ILogger = ConsoleLogger.getInstance();   // TODO: need to handle logging better for static
+    private logger: ILogger
+
+    constructor(logger: ILogger = ConsoleLogger.getInstance()) {
+        this.logger = logger;
+    }
 
     /**
      * Validates a JSON string against the Game JSON schema. 
@@ -21,8 +31,8 @@ class Game {
             const validate = ajv.compile<Game>(GameSchema);
             isValid = validate(toValidate);
         } catch (error) {
-            console.warn(error.message);
-            console.warn(`Game.validate: Invalid JSON data. Received: ${gameData}`);
+            this.logger.warn(error.message);
+            this.logger.warn(`Game.validate: Invalid JSON data. Received: ${gameData}`);
         }
 
         return isValid;

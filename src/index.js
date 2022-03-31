@@ -4,7 +4,7 @@ import html from "./index.html";
 import style from "./styles/global.css";
 import { initializeIcons } from "@fluentui/react";
 
-initializeIcons(undefined, { disableWarnings: true });
+initializeIcons();
 
 import App from "./components/app.tsx";
 ReactDOM.render(<App />, document.getElementById("root"));

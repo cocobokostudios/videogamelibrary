@@ -2,6 +2,7 @@ import { cleanup, render, waitFor, screen, within, getAllByRole, fireEvent } fro
 import "@testing-library/jest-dom";
 
 import * as React from "react";
+import { initializeIcons } from "@fluentui/react";
 
 import testCollection from "../data/test-collection.json";
 
@@ -10,6 +11,9 @@ import CollectionExplorer, {
         COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID 
     } from "../../src/components/collection-explorer";
 
+beforeEach(()=> {
+    initializeIcons(undefined, { disableWarnings: true }); 
+});
 afterEach(cleanup);
 
 it("has the command bar in the header", async ()=> {
