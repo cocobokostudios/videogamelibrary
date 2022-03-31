@@ -37,6 +37,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         const fileInput: HTMLInputElement = e.currentTarget as HTMLInputElement;
         if(fileInput && fileInput.files) {
             const files: FileList = fileInput.files;
+            console.dir(files[0]);
             console.log(await files[0].text()); // TODO: parse and load into local storage
         } 
     }
