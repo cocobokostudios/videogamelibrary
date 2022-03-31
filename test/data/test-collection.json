@@ -1,6 +1,6 @@
 [
     {
-        "gameId": "sample-game",
+        "game_id": "sample-game",
         "title": "Sample Game",
         "platform": "Sample Plaform" 
     }
