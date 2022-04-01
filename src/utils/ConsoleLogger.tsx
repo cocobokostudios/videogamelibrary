@@ -1,27 +1,23 @@
 import ILogger from "./ILogger";
 
 class ConsoleLogger implements ILogger {
-    private log: Console;
+    private logger: Console 
 
-    private constructor(c: Console = console) { 
-        this.log = c;
+    private constructor() { 
+        this.logger = console;
     }
 
     private static instance: ConsoleLogger = new ConsoleLogger();
-    static getInstance(c: Console = console): ConsoleLogger {
-        if(c) {
-            this.instance = new ConsoleLogger(c);
-        }
-
+    static getInstance(): ConsoleLogger {
         return this.instance;
     }
 
     error(message: string): void {
-        this.log.error(message);
+        this.logger.error(message);
     }
 
     warn(message: string): void {
-        this.log.warn(message);
+        this.logger.warn(message);
     }
 }
 export default ConsoleLogger;
