@@ -3,25 +3,17 @@ import ILogger from "./ILogger";
 class ConsoleLogger implements ILogger {
     private log: Console;
 
-    private constructor() { 
-        this.log = console;
+    private constructor(c: Console = console) { 
+        this.log = c;
     }
 
-    private static instance: ConsoleLogger;
-    static getInstance(): ConsoleLogger {
-        if(!this.instance) {
-            this.instance = new ConsoleLogger();
+    private static instance: ConsoleLogger = new ConsoleLogger();
+    static getInstance(c: Console = console): ConsoleLogger {
+        if(c) {
+            this.instance = new ConsoleLogger(c);
         }
 
         return this.instance;
-    }
-
-    static error(message: string): void {
-        return ConsoleLogger.getInstance().error(message);
-    }
-
-    static warn(message: string): void {
-        return ConsoleLogger.getInstance().warn(message);
     }
 
     error(message: string): void {
