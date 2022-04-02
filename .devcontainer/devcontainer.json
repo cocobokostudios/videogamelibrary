@@ -32,13 +32,15 @@
 	// Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "node",
 	"features": {
-		"git-lfs": "latest",
-		"github-cli": "latest",
 		"azure-cli": "latest",
-		"sshd": "latest",
 		"docker-in-docker": {
 			"version": "latest",
 			"moby": true
-		}
+		},
+		"git-lfs": "latest",
+		"github-cli": "latest",
+		"golang": "latest",
+		"powershell": "latest",
+		"sshd": "latest"
 	}
 }
