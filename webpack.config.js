@@ -23,7 +23,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|tsx)$/i,
+        test: /\.(js|jsx|ts|tsx)$/i,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
         options: { 
@@ -53,7 +53,7 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".js", ".jsx", ".tsx"] },
+  resolve: { extensions: ["*", ".js", ".jsx", ".tsx", ".ts"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
     filename: "[name].js",
