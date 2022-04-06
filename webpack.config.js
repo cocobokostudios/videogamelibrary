@@ -16,7 +16,8 @@ const getVersion = () => {
 module.exports = {
   mode: "development",
   entry: {
-    index: "./src/index.js"
+    app: "./src/index.js",
+    cli: "./src/cli/cli.ts"
   },
   devtool: "eval-source-map",
   module: {
@@ -55,7 +56,7 @@ module.exports = {
   resolve: { extensions: ["*", ".js", ".jsx", ".tsx"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "videogamelibrary.js",
+    filename: "[name].js",
     clean: true
   },
   devServer: {
