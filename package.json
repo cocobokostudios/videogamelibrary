@@ -4,11 +4,14 @@
   "description": "A React application to manage a library of video games",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack && chmod +x ./dist/cli/cli.js",
     "dev": "webpack serve",
-    "dev:web": "swa start ./dist",
+    "dev:web": "swa start ./dist/app",
     "test": "jest",
-    "test:actions": "bin/act -j build"
+    "test:actions": "tools/bin/act -j build"
+  },
+  "bin": {
+    "vgl-cli": "./dist/cli/cli.js"
   },
   "repository": "git+https://github.com/cocobokostudios/videogamelibrary.git",
   "author": "David Wesst <david@cocobokostudios.com>",

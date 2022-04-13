@@ -45,7 +45,10 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|jpeg)$/i,
-        type: "asset/resource"
+        type: "asset/resource",
+        generator: {
+          filename: "app/[hash][ext][query]"
+        }
       },
       {
         test: /\.html$/i,
@@ -56,12 +59,12 @@ module.exports = {
   resolve: { extensions: ["*", ".js", ".jsx", ".tsx", ".ts"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
-    filename: "[name].js",
+    filename: "[name]/[name].js",
     clean: true
   },
   devServer: {
     static: {
-        directory: path.join(__dirname, 'dist'),
+        directory: path.join(__dirname, 'dist/app'),
     },
     port: 9000,
     liveReload: false,
@@ -70,14 +73,21 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: "Video Game Library",
+      filename: "app/index.html",
       template: "src/index.html",
       meta: {
         "version": getVersion()
       }
     }),
     new VersionFile({
-      output: "./dist/version.txt",
+      output: "./dist/app/version.txt",
       templateString: getVersion()
+    }),
+    new webpack.BannerPlugin({
+      banner: "#!/usr/bin/env node",
+      raw: true,
+      entryOnly: true,
+      test: /cli\.js$/i
     })
   ]
 };
