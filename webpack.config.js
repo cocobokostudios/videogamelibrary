@@ -13,11 +13,11 @@ const getVersion = () => {
   return `${packageJson.name}@${packageJson.version}+${commitSha}`;
 }
 
-module.exports = {
+const appConfig = {
   mode: "development",
+  target: "web",
   entry: {
     app: "./src/index.js",
-    cli: "./src/cli/cli.ts"
   },
   devtool: "eval-source-map",
   module: {
@@ -56,11 +56,12 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".js", ".jsx", ".tsx", ".ts"] },
+  resolve: { 
+    extensions: ["*", ".js", ".jsx", ".tsx", ".ts"]
+  },
   output: {
     path: path.resolve(__dirname, "dist/"),
     filename: "[name]/[name].js",
-    clean: true
   },
   devServer: {
     static: {
@@ -82,6 +83,44 @@ module.exports = {
     new VersionFile({
       output: "./dist/app/version.txt",
       templateString: getVersion()
+    })
+  ]
+};
+
+const cliConfig = {
+  mode: "development",
+  target: "node",
+  entry: {
+    cli: "./src/cli/cli.ts"
+  },
+  devtool: "eval-source-map",
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx|ts|tsx)$/i,
+        exclude: /(node_modules|bower_components)/,
+        loader: "babel-loader",
+        options: { 
+            presets: [
+              ["@babel/preset-env", {targets: {node: "current"}}],
+              "@babel/preset-react", 
+              "@babel/preset-typescript"
+            ] 
+        }
+      }
+    ]
+  },
+  resolve: { 
+    extensions: ["*", ".js", ".jsx", ".tsx", ".ts"]
+  },
+  output: {
+    path: path.resolve(__dirname, "dist/"),
+    filename: "[name]/[name].js",
+  },
+  plugins: [
+    new VersionFile({
+      output: "./dist/cli/version.txt",
+      templateString: getVersion()
     }),
     new webpack.BannerPlugin({
       banner: "#!/usr/bin/env node",
@@ -89,5 +128,15 @@ module.exports = {
       entryOnly: true,
       test: /cli\.js$/i
     })
+  ],
+  ignoreWarnings: [
+    {
+      module: /yargs-parser\/build\/index\.cjs/i
+    },
+    {
+      module: /yargs\/build\/index\.cjs/i
+    }
   ]
 };
+
+module.exports = [appConfig, cliConfig];

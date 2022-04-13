@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "./dist/",
+    "esModuleInterop": true,
     "noImplicitAny": true,
     "module": "es6",
     "target": "es5",
@@ -16,4 +17,4 @@
     "./types/",
     "./jest-setup.ts"  
   ]
-}
+} 
