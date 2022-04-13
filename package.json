@@ -4,7 +4,8 @@
   "description": "A React application to manage a library of video games",
   "main": "index.js",
   "scripts": {
-    "build": "webpack && chmod +x ./dist/cli/cli.js",
+    "build": "webpack",
+    "postbuild": "chmod +x ./dist/cli/cli.js",
     "dev": "webpack serve",
     "dev:web": "swa start ./dist/app",
     "test": "jest",
