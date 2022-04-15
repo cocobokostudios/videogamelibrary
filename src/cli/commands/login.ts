@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { Axios, AxiosError } from "axios";
 import { string } from "yargs";
 
 const LOGIN_BASEURL = `https://id.twitch.tv/oauth2/token`
@@ -23,8 +23,31 @@ const LoginCommand = async (clientId: string, clientKey: string) => {
         throw new Error(generateParameterErrorMessage(clientId, clientKey));
     }
     else {
-        const response = await axios.post(REQUEST_URL);
-        return response.data;
+        try {
+            const response = await axios.post(REQUEST_URL);
+        } catch (error) {
+            // if received response
+            if(error.response) {
+                // check 400, 403, 5xx, other
+                if(error.response.status === 400) {
+                    console.log("made it here in 400");
+                    return Promise.reject(new Error(`Invalid Client with client_id=${clientId}`));
+                }
+                else if(error.response.status === 403) {
+                    throw new Error(`Unauthorized`);
+                }
+                else if(error.response.status > 499 && error.response.status < 600) {
+                    throw new Error(`Server Error ${error.response.status}`);
+                }
+                else {
+                    throw new Error(`Unknown Error ${error.response.status}`);
+                }
+            }
+            // if request property, then axios did not receive a response
+            else if(error.request) {
+                throw new Error(`No response from server`);
+            }
+        }
     }
 };
 export default LoginCommand;
