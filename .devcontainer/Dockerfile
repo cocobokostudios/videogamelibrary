@@ -8,7 +8,8 @@ FROM mcr.microsoft.com/vscode/devcontainers/typescript-node:0-${VARIANT}
 RUN wget -q https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
 RUN dpkg -i packages-microsoft-prod.deb
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install azure-functions-core-tools-4
+    && apt-get -y install azure-functions-core-tools-4 \
+    && apt-get -y install yarn
 
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
