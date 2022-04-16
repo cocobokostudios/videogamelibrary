@@ -1,5 +1,4 @@
 import axios from "axios";
-import yargs, { Arguments, CommandBuilder, CommandModule, Options } from "yargs";
 
 const LOGIN_BASEURL = `https://id.twitch.tv/oauth2/token`
 
@@ -66,25 +65,12 @@ export const Login = async (clientId: string, clientKey: string) : Promise<ILogi
     });
 };
 
-export class LoginCommand implements CommandModule {
-    commmand: string = "login";
-
-    description: string = "Login to IGDB";
-
-    builder: CommandBuilder = (yargs) => {
-        return yargs.options({
-            clientID: { type: 'string', demand: true },
-            clientSecret: { type: 'string', demand: true }
-        });
+export const LoginCommand = async (input: readonly string[]) => {
+    if(input.length < 2) {
+        console.log("Not enough parameters");
     }
-
-    async handler(argv: Arguments<Options>) : Promise<void> {
-        const { clientID, clientSecret } = argv;
-        try {
-            const loginResult = await Login(clientID as string, clientSecret as string);
-            console.log(loginResult.message);
-        } catch (error) {
-            console.error(error);
-        }        
+    else {
+        console.log(await Login(input[0], input[1]));
     }
-}
+};
+

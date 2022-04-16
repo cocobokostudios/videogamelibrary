@@ -3,6 +3,8 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const VersionFile = require("webpack-version-file");
 
+const babelConfig = require("./babel.config.js");
+
 /**
  * @returns {string} semver version value based on current commit and value in package.json
  */
@@ -26,13 +28,7 @@ const appConfig = {
         test: /\.(js|jsx|ts|tsx)$/i,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
-        options: { 
-            presets: [
-              ["@babel/preset-env", {targets: {node: "current"}}],
-              "@babel/preset-react", 
-              "@babel/preset-typescript"
-            ] 
-        }
+        options: babelConfig
       },
       {
         test: /\.css$/i,
@@ -100,15 +96,12 @@ const cliConfig = {
         test: /\.(js|jsx|ts|tsx)$/i,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
-        options: { 
-            presets: [
-              ["@babel/preset-env", {targets: {node: "current"}}],
-              "@babel/preset-react", 
-              "@babel/preset-typescript"
-            ] 
-        }
+        options: babelConfig
       }
     ]
+  },
+  experiments: {
+    topLevelAwait: true
   },
   resolve: { 
     extensions: ["*", ".js", ".jsx", ".tsx", ".ts"]

@@ -1,13 +1,15 @@
-import yargs from "yargs/yargs";
-
 import HelloCommand from "./commands/hello";
 import { LoginCommand } from "./commands/login";
 
-yargs(process.argv.slice(2))
-    .version()
-    .usage("Usage: vgl-cli <command> [options]")
-    .help("help")
-    .alias("help", "h")
-    .command("hello", "Say hello", HelloCommand)
-    .command(new LoginCommand())
-    .parseAsync();
+const argv = process.argv.slice(2);
+const command = argv[0];
+const commandInput = argv.slice(1);
+
+switch(command) {
+    case "login":
+        await LoginCommand(commandInput);
+        break;
+    default:
+        console.log(`Unknown command ${command}`);
+        break;
+}
