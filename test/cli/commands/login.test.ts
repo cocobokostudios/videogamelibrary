@@ -15,7 +15,6 @@ describe("when an API request is sent", ()=> {
     it("requests it from the AUTH base URI with ClientID and ClientSecret query string parameters", async ()=> {
         // arrange
         const mockResponse = { data: "mock data" };
-
         mockAxios.post.mockImplementationOnce((url) => Promise.resolve(mockResponse));
 
         // act
@@ -24,7 +23,7 @@ describe("when an API request is sent", ()=> {
         await LoginCommand(clientId, clientSecret);
 
         // assert
-        const expectedRequestURL = `${AUTH_BASE_URL}?client_id=${clientId}&client_secret=${clientSecret}`;
+        const expectedRequestURL = `${AUTH_BASE_URL}?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
         
         expect(mockAxios.post).toBeCalledTimes(1);
         expect(mockAxios.post).toBeCalledWith(expectedRequestURL);
@@ -216,6 +215,33 @@ describe("when user fails login", ()=> {
 });
 
 describe("when API call succeeds", ()=> {
-    it.todo("greets the user with their username");
-    it.todo("saves the access_token in the config");
+    it("shows success message", async ()=> {
+        // arrange
+        const successData = {
+            "access_token": "fakeToken",
+            "expires_in": 123456789,
+            "token_type": "fake"
+        }
+        const successResponse = {
+            data: successData,
+            status: 200,
+            statusText: "OK",
+            headers: {},
+            config: {}
+        }
+        mockAxios.post.mockImplementationOnce((url)=> {
+            return Promise.resolve(successResponse);
+        });
+
+        // act
+        const actual = await LoginCommand("client", "secret");
+
+        // assert
+        const expected = {
+            message: "Login Successful",
+            data: successData
+        };
+        expect(actual).toEqual(expected);
+        expect(mockAxios.post).toBeCalledTimes(1);
+    });
 });

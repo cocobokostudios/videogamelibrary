@@ -1,4 +1,5 @@
 import axios, { Axios, AxiosError } from "axios";
+import { resolve } from "path";
 import { string } from "yargs";
 
 const LOGIN_BASEURL = `https://id.twitch.tv/oauth2/token`
@@ -17,7 +18,7 @@ const generateParameterErrorMessage = (clientId: string, clientKey: string):stri
 };
 
 const LoginCommand = async (clientId: string, clientKey: string) => {
-    const REQUEST_URL = `${LOGIN_BASEURL}?client_id=${clientId}&client_secret=${clientKey}`;
+    const REQUEST_URL = `${LOGIN_BASEURL}?client_id=${clientId}&client_secret=${clientKey}&grant_type=client_credentials`;
 
     if(!clientId || !clientKey || !clientId.trim() || !clientKey.trim() ) {
         throw new Error(generateParameterErrorMessage(clientId, clientKey));
@@ -25,13 +26,17 @@ const LoginCommand = async (clientId: string, clientKey: string) => {
     else {
         try {
             const response = await axios.post(REQUEST_URL);
+            return Promise.resolve({
+                message: `Login Successful`,
+                data: response.data
+            });
+
         } catch (error) {
             // if received response
             if(error.response) {
                 // check 400, 403, 5xx, other
                 if(error.response.status === 400) {
-                    console.log("made it here in 400");
-                    return Promise.reject(new Error(`Invalid Client with client_id=${clientId}`));
+                    throw new Error(`Invalid Client with client_id=${clientId}`);
                 }
                 else if(error.response.status === 403) {
                     throw new Error(`Unauthorized`);
