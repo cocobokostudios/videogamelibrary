@@ -1,4 +1,4 @@
-import LoginCommand from "../../../src/cli/commands/login";
+import { Login } from "../../../src/cli/commands/login";
 
 // mock axios
 import axios, { Axios, AxiosResponse } from "axios";
@@ -20,7 +20,7 @@ describe("when an API request is sent", ()=> {
         // act
         const clientId = "testClientId";
         const clientSecret = "testClientSecret";
-        await LoginCommand(clientId, clientSecret);
+        await Login(clientId, clientSecret);
 
         // assert
         const expectedRequestURL = `${AUTH_BASE_URL}?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
@@ -37,7 +37,7 @@ describe("when invalid parameters are passed", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand(undefined, undefined);
+            await Login(undefined, undefined);
         }
         
         // assert
@@ -51,7 +51,7 @@ describe("when invalid parameters are passed", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand(null, null);
+            await Login(null, null);
         }
         
         // assert
@@ -65,7 +65,7 @@ describe("when invalid parameters are passed", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("", "");
+            await Login("", "");
         }
         
         // assert
@@ -79,7 +79,7 @@ describe("when invalid parameters are passed", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("  ", "  ");
+            await Login("  ", "  ");
         }
         
         // assert
@@ -108,7 +108,7 @@ describe("when user fails login", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("sampleId", "sampleSecret");
+            await Login("sampleId", "sampleSecret");
         }
 
         // assert
@@ -134,7 +134,7 @@ describe("when user fails login", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("sampleId", "sampleSecret");
+            await Login("sampleId", "sampleSecret");
         }
 
         // assert
@@ -160,7 +160,7 @@ describe("when user fails login", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("sampleId", "sampleSecret");
+            await Login("sampleId", "sampleSecret");
         }
 
         // assert
@@ -186,7 +186,7 @@ describe("when user fails login", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("sampleId", "sampleKey");
+            await Login("sampleId", "sampleKey");
         }
 
         // assert
@@ -205,7 +205,7 @@ describe("when user fails login", ()=> {
 
         // act
         const act = async ()=> {
-            await LoginCommand("sampleId", "sampleSecret");
+            await Login("sampleId", "sampleSecret");
         };
 
         // assert
@@ -234,7 +234,7 @@ describe("when API call succeeds", ()=> {
         });
 
         // act
-        const actual = await LoginCommand("client", "secret");
+        const actual = await Login("client", "secret");
 
         // assert
         const expected = {

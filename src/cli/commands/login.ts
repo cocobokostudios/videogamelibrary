@@ -1,6 +1,5 @@
-import axios, { Axios, AxiosError } from "axios";
-import { resolve } from "path";
-import { string } from "yargs";
+import axios from "axios";
+import yargs, { Arguments, CommandBuilder, CommandModule, Options } from "yargs";
 
 const LOGIN_BASEURL = `https://id.twitch.tv/oauth2/token`
 
@@ -17,8 +16,16 @@ const generateParameterErrorMessage = (clientId: string, clientKey: string):stri
     return message;
 };
 
-const LoginCommand = async (clientId: string, clientKey: string) => {
+export interface ILoginResult {
+    message: string
+    data?: object
+}
+
+export const Login = async (clientId: string, clientKey: string) : Promise<ILoginResult> => {
     const REQUEST_URL = `${LOGIN_BASEURL}?client_id=${clientId}&client_secret=${clientKey}&grant_type=client_credentials`;
+    let result : ILoginResult = {
+        message: "Login Failed",
+    }
 
     if(!clientId || !clientKey || !clientId.trim() || !clientKey.trim() ) {
         throw new Error(generateParameterErrorMessage(clientId, clientKey));
@@ -26,11 +33,10 @@ const LoginCommand = async (clientId: string, clientKey: string) => {
     else {
         try {
             const response = await axios.post(REQUEST_URL);
-            return Promise.resolve({
-                message: `Login Successful`,
+            result = {
+                message: "Login Successful",
                 data: response.data
-            });
-
+            };
         } catch (error) {
             // if received response
             if(error.response) {
@@ -54,5 +60,31 @@ const LoginCommand = async (clientId: string, clientKey: string) => {
             }
         }
     }
+
+    return new Promise<ILoginResult>((resolve)=>{
+        resolve(result);
+    });
 };
-export default LoginCommand;
+
+export class LoginCommand implements CommandModule {
+    commmand: string = "login";
+
+    description: string = "Login to IGDB";
+
+    builder: CommandBuilder = (yargs) => {
+        return yargs.options({
+            clientID: { type: 'string', demand: true },
+            clientSecret: { type: 'string', demand: true }
+        });
+    }
+
+    async handler(argv: Arguments<Options>) : Promise<void> {
+        const { clientID, clientSecret } = argv;
+        try {
+            const loginResult = await Login(clientID as string, clientSecret as string);
+            console.log(loginResult.message);
+        } catch (error) {
+            console.error(error);
+        }        
+    }
+}
