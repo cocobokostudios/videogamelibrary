@@ -1,4 +1,6 @@
 import axios from "axios";
+import React, {useState, useEffect} from "react";
+import { render, Text, Box } from "ink";
 
 const LOGIN_BASEURL = `https://id.twitch.tv/oauth2/token`
 
@@ -18,6 +20,11 @@ const generateParameterErrorMessage = (clientId: string, clientKey: string):stri
 export interface ILoginResult {
     message: string
     data?: object
+}
+
+export interface ILoginProps { 
+    clientID: string;
+    clientSecret: string;
 }
 
 export const Login = async (clientId: string, clientKey: string) : Promise<ILoginResult> => {
@@ -65,12 +72,39 @@ export const Login = async (clientId: string, clientKey: string) : Promise<ILogi
     });
 };
 
+const LoginOutput = (props: ILoginProps) => {
+    const [result, setResult] = useState<ILoginResult>({ message: "Pending" });
+
+    useEffect(() => {
+        const doLogin = async () => {
+            const loginResult: ILoginResult  = await Login(props.clientID, props.clientSecret);
+            setResult(loginResult);
+        };
+        
+        doLogin();
+    }, []);
+
+    return (
+        <Box width="100%" 
+            flexDirection={"column"} 
+            alignItems={"flex-start"} 
+            justifyContent={"center"} 
+            borderStyle="double" 
+            borderColor={"green"} 
+            paddingLeft={2}
+            >
+            <Text>Login Status: {result.message}</Text>
+        </Box>
+    )
+}
+
 export const LoginCommand = async (input: readonly string[]) => {
     if(input.length < 2) {
         console.log("Not enough parameters");
     }
     else {
-        console.log(await Login(input[0], input[1]));
+        render(<LoginOutput clientID={input[0]} clientSecret={input[1]} />);
+        //console.log(await Login(input[0], input[1]));
     }
 };
 
