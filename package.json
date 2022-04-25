@@ -4,11 +4,16 @@
   "description": "A React application to manage a library of video games",
   "main": "index.js",
   "scripts": {
+    "prebuild": "rm -rf ./dist/**/*.*",
     "build": "webpack",
+    "postbuild": "chmod +x ./dist/cli/cli.js",
     "dev": "webpack serve",
-    "dev:web": "swa start ./dist",
+    "dev:web": "swa start ./dist/app",
     "test": "jest",
-    "test:actions": "bin/act -j build"
+    "test:actions": "tools/bin/act -j build"
+  },
+  "bin": {
+    "vgl-cli": "./dist/cli/cli.js"
   },
   "repository": "git+https://github.com/cocobokostudios/videogamelibrary.git",
   "author": "David Wesst <david@cocobokostudios.com>",
@@ -28,6 +33,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.4.0",
+    "@types/node": "^17.0.23",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "babel-jest": "^27.5.0",
@@ -36,15 +42,23 @@
     "html-loader": "^3.1.0",
     "html-webpack-plugin": "^5.5.0",
     "jest": "^27.5.0",
+    "jest-mock-extended": "^2.0.4",
     "style-loader": "^3.3.1",
     "webpack": "^5.68.0",
     "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.7.4",
-    "webpack-version-file": "git+https://github.com/cocobokostudios/webpack-version-file#main"
+    "webpack-version-file": "https://github.com/cocobokostudios/webpack-version-file#main"
   },
   "dependencies": {
+    "@babel/plugin-syntax-top-level-await": "^7.14.5",
+    "ajv": "^8.10.0",
+    "axios": "^0.26.1",
+    "bufferutil": "^4.0.6",
+    "conf": "^10.1.2",
+    "ink": "^3.2.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "utf-8-validate": "^5.0.9"
   },
   "private": true
 }
