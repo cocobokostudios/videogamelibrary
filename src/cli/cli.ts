@@ -9,6 +9,9 @@ switch(command) {
     case "login":
         await LoginCommand(commandInput);
         break;
+    case "hello":
+        await HelloCommand();
+        break;
     default:
         console.log(`Unknown command ${command}`);
         break;
