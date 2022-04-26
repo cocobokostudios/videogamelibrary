@@ -1,7 +1,22 @@
 [
     {
-        "game_id": "sample-game",
-        "title": "Sample Game",
-        "platform": "Sample Plaform" 
+        "id": "simcity_snes",
+        "title": "SimCity",
+        "platform_id": "snes" 
+    },
+    {
+        "id": "uncharted-waters_snes",
+        "title": "Uncharted Waters",
+        "platform_id": "snes" 
+    },
+    {
+        "id": "uncharted-waters_nes",
+        "title": "Uncharted Waters",
+        "platform_id": "nes" 
+    },
+    {
+        "id": "uncharted-waters-new-horizons_snes",
+        "title": "Uncharted Waters: New Horizons",
+        "platform_id": "snes" 
     }
 ]

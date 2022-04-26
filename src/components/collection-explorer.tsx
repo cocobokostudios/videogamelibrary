@@ -3,6 +3,7 @@ import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps, DialogFo
 import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
+import CollectionController from "../controllers/collection-controller";
 
 export const COLLECTION_EXPLORER_TESTID = "collection-explorer";
 export const COLLECTION_EXPLORER_COMMAND_BAR_TESTID = "collection-explorer_commandbar";
@@ -15,13 +16,9 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         showCloseButton: true,
         closeButtonAriaLabel: "Close"
     };
+    const collectionController = CollectionController.getInstance();
 
     const commandItems: ICommandBarItemProps[] = [
-        {
-            key: "exploreCommandItem",
-            text: "Explore",
-            iconProps: { iconName: "ExploreData" }
-        },
         {
             key: "loadCommandItem",
             text: "Load",
@@ -37,8 +34,8 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         const fileInput: HTMLInputElement = e.currentTarget as HTMLInputElement;
         if(fileInput && fileInput.files) {
             const files: FileList = fileInput.files;
-            console.dir(files[0]);
-            console.log(await files[0].text()); // TODO: parse and load into local storage
+            const loadedCollection = await CollectionController.getInstance().loadCollectionFromFile(files[0]);
+            console.dir(loadedCollection);
         } 
     }
 
@@ -57,7 +54,8 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
             dialogContentProps={loadDialogContentProps}>
                 Select a file to load your collection.
                 <input id="loadCollectionInput"
-                    type="file" 
+                    type="file"
+                    accept="text/csv"
                     onChange={onFileInputChange} />
             <DialogFooter>
                 <PrimaryButton onClick={toggleHideLoadDialog} text="Load" />
