@@ -29,18 +29,18 @@ it("has the command bar in the header", async ()=> {
 });
 
 describe("Load Collection Dialogue", ()=> {
-    it("displays a load collection dialog when load button is selected", async ()=> {
+    it("displays a collection load file input when load button is selected", async ()=> {
         // arrange
         render(<CollectionExplorer />);
-    
-        // act
         const loadButton = await screen.findByText("Load");
         fireEvent.click(loadButton);
-        const loadDialog = await screen.getByRole("dialog");
+        await waitFor(()=> screen.getByRole("dialog"));
+    
+        // act
+        const fileInput = screen.getByTestId("loadCollectionInput");
     
         // assert
-        // NOTE: toBeVisible checks the wrapper element which is technically invisible
-        expect(loadDialog).toBeTruthy();
+        expect(fileInput).toBeInTheDocument();
     });
 
     it("enables the dialogue load button on a valid collection file loaded", async ()=> {
@@ -62,7 +62,7 @@ describe("Load Collection Dialogue", ()=> {
         waitFor(()=> screen.getByRole("dialog"));
 
         // act
-        const fileInput : HTMLInputElement = await screen.getByTestId("loadCollectionInput") as HTMLInputElement;
+        const fileInput : HTMLInputElement = screen.getByTestId("loadCollectionInput") as HTMLInputElement;
         fireEvent.change(fileInput, {
             target: {
                 files: [testFile]
@@ -73,37 +73,49 @@ describe("Load Collection Dialogue", ()=> {
         expect(loadButton).toBeEnabled();
     });
 
-    it("disables the dialogue load button when an invalid collection is loaded", async ()=> {
+    it("closes the load dialogue when dialogue load button is clicked", async ()=> {
         // arrange file content
-        const invalidFileContent = `
+        const testFileContent = `
             gameId,title,platformId
-            ,snes
+            invalid-entry_snes,,snes
             ,,nes
             another_entry,title
             valid-game_snes,Valid Game,snes
         `.trim();
-        const testFile = new File([invalidFileContent], "collection.csv", {type: "text/csv"});
-        testFile.text = jest.fn(()=> Promise.resolve(invalidFileContent)); // mock text function, because it does not exist in JSDOM
+        const testFile = new File([testFileContent], "collection.csv", {type: "text/csv"});
+        testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
 
         // arrange
+        render(<CollectionExplorer />);
+        const loadButton = await screen.findByText("Load");
+        fireEvent.click(loadButton);
+        await waitFor(()=> screen.getByRole("dialog"));
+
+        // act
+        const fileInput : HTMLInputElement = await screen.getByTestId("loadCollectionInput") as HTMLInputElement;
+        fireEvent.change(fileInput, {
+            target: {
+                files: [testFile]
+            }
+        });
+        fireEvent.click(loadButton);
+
+        // assert
+        expect(screen.getByRole("dialog")).not.toBeVisible();
+    });
+
+    it("closes the load dialogue when the dialogue cancel button is selected", async ()=> {
+        // arrange dialogue
         render(<CollectionExplorer />);
         const loadButton = await screen.findByText("Load");
         fireEvent.click(loadButton);
         waitFor(()=> screen.getByRole("dialog"));
 
         // act
-        const fileInput = await screen.getByTestId("loadCollectionInput");
-        fireEvent.change(fileInput, {
-            target: {
-                files: [testFile]
-            }
-        });
+        const cancelButton = await screen.findByText("Cancel");
+        fireEvent.click(cancelButton);
 
         // assert
-        expect(loadButton).not.toBeEnabled();
+        expect(screen.getByRole("dialog")).not.toBeVisible();
     });
-
-    it.todo("closes the load dialogue when dialogue load button is selected");
-    it.todo("closes the load dialogue when the dialogue cancel button is selected");
-    it.todo("clears the loadedCollection when the dialogue dialogue is closed"); 
 });
