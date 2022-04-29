@@ -82,6 +82,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
             dialogContentProps={loadDialogContentProps}>
                 Select a file to load your collection.
                 <input id="loadCollectionInput"
+                    data-testid="loadCollectionInput"
                     type="file"
                     accept="text/csv"
                     onChange={onFileInputChange} />
