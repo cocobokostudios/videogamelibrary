@@ -12,7 +12,10 @@ import CollectionExplorer, {
     } from "../../src/components/collection-explorer";
 
 beforeEach(()=> {
-    initializeIcons(undefined, { disableWarnings: true }); 
+    initializeIcons(undefined, { disableWarnings: true });
+    jest.spyOn(console, "warn").mockImplementation(jest.fn(()=> {}));
+    jest.spyOn(console, "error").mockImplementation(jest.fn(()=> {}));
+
 });
 afterEach(cleanup);
 
