@@ -1,1 +1,3 @@
-*.csv
+*.*
+!invalid-collection.csv
+!valid-collection.csv
