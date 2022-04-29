@@ -4,6 +4,7 @@ import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
 import CollectionController from "../controllers/collection-controller";
+import CollectionList from "./collection-list";
 import Game from "../models/game";
 
 export const COLLECTION_EXPLORER_TESTID = "collection-explorer";
@@ -72,8 +73,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
                 <CommandBar data-testid={COLLECTION_EXPLORER_COMMAND_BAR_TESTID} items={commandItems} />
             </header>
             <main>
-                <p>There are {collection.length} games in the collection.</p>
-                <p>There are {loadedCollection.length} games in the loaded collection.</p>
+                <CollectionList items={collection} />
             </main>
         </section>
         <Dialog

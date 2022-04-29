@@ -3,3 +3,15 @@
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+@media screen and (max-width: 768px) {
+    .hide-medium  {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .hide-small  {
+        display: none;
+    }
+}
