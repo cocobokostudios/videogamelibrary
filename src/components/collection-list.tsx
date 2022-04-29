@@ -1,18 +1,20 @@
 import * as React from "react";
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react/lib/DetailsList";
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
 
 import Game from "../models/game";
+import { PrimaryButton } from "@fluentui/react";
 
 export interface ICollectionListProps {
     items: Array<Game>;
 }
 
 const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) => {
-    const columns: IColumn[] = [
+    const defaultColumns: IColumn[] = [
         {
             key: "platformCol",
             name: "Platform",
-            minWidth: 35,
+            minWidth: 40,
+            maxWidth: 60,
             onRender: (item: Game) => {
                 return <span>{item.platformId}</span>
             }
@@ -28,39 +30,35 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) =
         {
             key: "regionCol",
             name: "Region",
-            minWidth: 1,
-            headerClassName: "hide-small",
-            className: "hide-small",
+            minWidth: 40,
+            maxWidth: 60,
             onRender: (item: Game) => {
-                return <span>Region</span>
+                return <span>JP</span>
             }
         },
         {
             key: "boxCol",
-            headerClassName: "hide-medium",
-            className: "hide-medium",
             name: "Has Box",
-            minWidth: 1,
+            minWidth: 40,
+            maxWidth: 60,
             onRender: (item: Game) => {
                 return <span>true</span>
             }
         },
         {
             key: "instructionsCol",
-            headerClassName: "hide-medium",
-            className: "hide-medium",
             name: "Has Instructions",
-            minWidth: 1,
+            minWidth: 40,
+            maxWidth: 60,
             onRender: (item: Game) => {
                 return <span>true</span>
             }
         },
         {
             key: "sealedCol",
-            headerClassName: "hide-medium",
-            className: "hide-medium",
             name: "Is Sealed",
-            minWidth: 1,
+            minWidth: 40,
+            maxWidth: 60,
             onRender: (item: Game) => {
                 return <span>false</span>
             }
@@ -68,15 +66,14 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) =
         {
             key: "priceCol",
             name: "Price",
-            headerClassName: "hide-small",
-            className: "hide-small",
-            minWidth: 1,
+            minWidth: 40,
+            maxWidth: 60,
             onRender: (item: Game) => {
                 return <span>$ 1.23</span>
             }
         }
     ];
-
+    const [columns, setColumns] = React.useState(defaultColumns);
 
     return (
         <>
