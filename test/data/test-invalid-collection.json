@@ -1,0 +1,18 @@
+[
+    {
+        "game_id": "sample-game",
+        "title": "Sample Game",
+        "platform": "Sample Plaform" 
+    },
+    {
+        "game_id": "sample-game",
+        "title": "Sample Game",
+        "platform": "Sample Plaform",
+        "invalidProperty": 123 
+    },
+    {   
+        "title": "Sample Game",
+        "platform": "Sample Plaform" 
+    },
+    {}
+]

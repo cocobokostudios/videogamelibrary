@@ -10,9 +10,8 @@ interface AppProps {
   name?: string;
 }
 
-class App extends React.Component<AppProps> {
-  render(){
-    return(
+const App: React.FunctionComponent<AppProps> = ((props)=> {
+    return (
       <>
         <header data-testid="app_header" className={styles.AppHeader} >
           <AppLogo />
@@ -23,7 +22,5 @@ class App extends React.Component<AppProps> {
         </main>
       </>
     );
-  }
-}
-
+});
 export default App;

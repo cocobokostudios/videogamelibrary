@@ -2,12 +2,16 @@ import { act, cleanup, render, waitFor, screen, within } from "@testing-library/
 import "@testing-library/jest-dom";
 
 import * as React from "react";
+import { initializeIcons } from "@fluentui/react";
 
-import App from "../src/components/app";
-import { APP_TITLE_TESTID } from "../src/components/app-title";
-import { APP_LOGO_TESTID } from "../src/components/app-logo";
+import App from "../../src/components/app";
+import { APP_TITLE_TESTID } from "../../src/components/app-title";
+import { APP_LOGO_TESTID } from "../../src/components/app-logo";
 
 // setup & teardown
+beforeEach(()=> {
+    initializeIcons(undefined, { disableWarnings: true }); 
+});
 afterEach(cleanup);
 
 it("displays the title and logo in the header", async ()=> {

@@ -64,9 +64,9 @@ module.exports = {
     },
     port: 9000,
     liveReload: false,
+    hot: true
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       title: "Video Game Library",
       template: "src/index.html",
