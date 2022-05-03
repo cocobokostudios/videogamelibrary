@@ -1,5 +1,5 @@
-game_id,title,platform_id
-simcity_snes,SimCity,snes
-uncharted-waters_snes,Uncharted Waters,snes
-uncharted-waters_nes,Uncharted Waters,nes
-uncharted-waters-new-horizons_snes,Uncharted Waters: New Horizons,snes
+gameId,title,platformId,regionId,price
+simcity_snes,SimCity,snes,na,9.99
+uncharted-waters_snes,Uncharted Waters,snes,na,9.98
+uncharted-waters_nes,Uncharted Waters,nes,na,9.97
+uncharted-waters-new-horizons_snes,Uncharted Waters: New Horizons,snes,na,9.96

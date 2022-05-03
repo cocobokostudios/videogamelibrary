@@ -86,8 +86,8 @@ class CollectionController {
             complete: (result: Papa.ParseResult<Game>) => {
                 // although it is cast as Game, it was not created using the constructor
                 parsedCollection.push(...result.data.map((game: Game) => {
-                    const newGame = new Game(game.gameId, game.title, game.platformId);
-                    if(newGame.isComplete() === false) {
+                    const newGame = new Game(game.gameId, game.title, game.platformId, game.regionId);
+                    if(newGame.hasRequiredFields() === false) {
                         this.logger.warn(`Invalid game: ${newGame}`);
                     }
                     return newGame;

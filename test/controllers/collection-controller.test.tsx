@@ -3,7 +3,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-import { mock } from "jest-mock-extended";
+//import { mock } from "jest-mock-extended";
 
 import CollectionController from "../../src/controllers/collection-controller";
 import Game from "../../src/models/game";
@@ -12,8 +12,12 @@ import ILogger from "../../src/utils/ILogger";
 
 import validJSONCollectionData from "../data/test-collection.json";
 
+const mockLogger : ILogger = {
+    error: jest.fn(),
+    warn: jest.fn()
+};
 beforeEach(()=> {
-    CollectionController.resetInstance();
+    jest.clearAllMocks();
 });
 
 it("returns a singleton instance", ()=> {
@@ -50,11 +54,11 @@ describe("Load Collection", ()=> {
     it("parses CSV file into Game objects", async ()=> {
         // arrange
         const testFileContent = `
-            gameId,title,platformId
-            simcity_snes,SimCity,snes
-            uncharted-waters_snes,Uncharted Waters,snes
-            uncharted-waters_nes,Uncharted Waters,nes
-            uncharted-waters-new-horizons_snes,Uncharted Waters: New Horizons,snes
+            gameId,title,platformId,regionId
+            simcity_snes,SimCity,snes,na
+            uncharted-waters_snes,Uncharted Waters,snes,na
+            uncharted-waters_nes,Uncharted Waters,nes,na
+            uncharted-waters-new-horizons_snes,Uncharted Waters: New Horizons,snes,na
         `.trim();
         const testFile = new File([testFileContent], "collection.csv", {type: "text/csv"});
         testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
@@ -74,26 +78,24 @@ describe("Load Collection", ()=> {
     it("logs CSV entries unable to be parsed as warnings", async ()=> {
         // arrange file withone valid entry
         const testFileContent = `
-            gameId,title,platformId
+            gameId,title,platformId,regionId
             invalid-entry_snes,,snes
-            ,,nes
+            ,,nes,jp
             another_entry,title
-            valid-game_snes,Valid Game,snes
+            valid-game_snes,Valid Game,snes,jp
         `.trim();
         const testFile = new File([testFileContent], "collection.csv", {type: "text/csv"});
         testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
-        // arrange mock logger
-        const loggerMock = mock<ILogger>();
 
         // arrange target to test
-        const target = CollectionController.resetInstance(loggerMock);
+        const target = CollectionController.resetInstance(mockLogger);
 
         // act
         const result = await target.loadCollectionFromFile(testFile);
 ``
         // assert
         expect(result.length).toEqual(4);
-        expect(loggerMock.warn).toBeCalledTimes(3);
+        expect(mockLogger.warn).toBeCalledTimes(3);
     });
     
     it.skip("saves a game collection from memory into local storage", async ()=> {
