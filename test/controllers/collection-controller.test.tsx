@@ -7,6 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import CollectionController from "../../src/controllers/collection-controller";
 import Game from "../../src/models/game";
+import Collection from "../../src/models/collection";
 import ConsoleLogger from "../../src/utils/ConsoleLogger";
 import ILogger from "../../src/utils/ILogger";
 
@@ -50,7 +51,47 @@ it("initializes with an empty collection", ()=> {
     expect(target.collection.length).toEqual(0);
 });
 
-describe("Load Collection", ()=> {  
+describe("Save Collection", ()=> {
+    it("saves the collection to local storage", ()=> {
+        // arrange
+        const testCollectionId = "collectionId";
+        const testCollectionItems : Array<Game> = [
+            new Game("game1_snes", "Game One", "snes", "na"),
+            new Game("game2_snes", "Game Two", "snes", "na"),
+            new Game("game3_snes", "Game Three", "snes", "na")
+        ];
+        const testCollection = new Collection(testCollectionId, testCollectionItems);
+
+        // act
+        const target = CollectionController.getInstance();
+        target.saveCollection(testCollection);
+
+        // assert
+        expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).not.toBe(undefined);
+        expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).toEqual(JSON.stringify(testCollection));
+    });
+
+    it("saves the ID of the default collection to local storage as config", ()=> {
+        // arrange
+        const defaultCollectionId = "myCollectionId";
+
+        // act
+        const target = CollectionController.getInstance();
+        target.setDefaultCollection(defaultCollectionId);
+
+        // assert
+        expect(localStorage.getItem(`vgl_config_defaultCollection`)).not.toBe(undefined);
+        expect(localStorage.getItem(`vgl_config_defaultCollection`)).toEqual(defaultCollectionId);
+    });
+});
+
+describe("Load Collection", ()=> {
+    it.todo("loads the named collection from local storage or undefined if not found");
+    it.todo("loads the default collection stored in local storage or undefined if not found");
+    it.todo("returns undefined if no default collection is set");
+});
+
+describe("Read Collection File", ()=> {  
     it("parses CSV file into Game objects", async ()=> {
         // arrange
         const testFileContent = `
@@ -96,20 +137,5 @@ describe("Load Collection", ()=> {
         // assert
         expect(result.length).toEqual(4);
         expect(mockLogger.warn).toBeCalledTimes(3);
-    });
-    
-    it.skip("saves a game collection from memory into local storage", async ()=> {
-        // arrange
-        const target = CollectionController.getInstance();
-        const expectedKey = `${CollectionController.STORAGE_PREFIX}_collection`;
-        await target.loadCollection(validJSONCollectionData);
-    
-        // act
-        target.saveCollection();
-    
-        // assert
-        const result = localStorage.getItem(expectedKey); 
-        expect(result).not.toBeNull();
-        expect(JSON.parse(result)).toStrictEqual(target.collection);
     });
 });

@@ -1,4 +1,5 @@
 import Game from "../models/game";
+import Collection from "../models/collection";
 import ConsoleLogger from "../utils/ConsoleLogger";
 import ILogger from "../utils/ILogger";
 
@@ -111,10 +112,22 @@ class CollectionController {
 
     /**
      * Saves collection in memory to local storage.
+     * @param {Collection} collection The collection of games to save to storage.
      * @returns {void}
      */
-    saveCollection() {
-        localStorage.setItem(`${CollectionController.STORAGE_PREFIX}_collection`, JSON.stringify(this.collection));
+    saveCollection(collection: Collection) {
+        const storageKey = `vgl_collection_${collection.id}`;
+        localStorage.setItem(storageKey, JSON.stringify(collection));
+    }
+
+    /**
+     * Stores the collectionId value as one to use when loading the default collection from storage.
+     * @param collectionId ID value associated with the collection. Used for retrieving the collection.
+     * @returns {void}
+     */
+    setDefaultCollection(collectionId: string) {
+        const storageKey = `vgl_config_defaultCollection`;
+        localStorage.setItem(storageKey, collectionId);
     }
 }
 export default CollectionController;
