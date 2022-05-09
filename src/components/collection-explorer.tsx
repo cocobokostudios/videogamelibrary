@@ -73,7 +73,10 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
                 <CommandBar data-testid={COLLECTION_EXPLORER_COMMAND_BAR_TESTID} items={commandItems} />
             </header>
             <main>
-                <CollectionList items={collection} />
+                <CollectionList 
+                    collectionId="myCollection"
+                    collectionTitle="My Collection"
+                    items={collection} />
             </main>
         </section>
         <Dialog

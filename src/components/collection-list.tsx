@@ -3,8 +3,11 @@ import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@flu
 
 import Game from "../models/game";
 import { PrimaryButton } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 
 export interface ICollectionListProps {
+    collectionId: string;
+    collectionTitle: string;
     items: Array<Game>;
 }
 
@@ -73,18 +76,34 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) =
             }
         }
     ];
+
+    const [isDefaultCollectionChecked, { toggle: toggleIsDefaultCollectionChecked }] = useBoolean(false);
     const [columns, setColumns] = React.useState(defaultColumns);
 
+    const handleIsDefaultCheckedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        toggleIsDefaultCollectionChecked();
+    }
+
+    React.useEffect(()=> {
+        // on state change, save the change here.
+        //CollectionController.getInstance().setDefaultCollection(props.collectionId)
+    }, [isDefaultCollectionChecked]);
+
     return (
-        <>
-        <p>There are {props.items.length} games on display.</p>
-        <DetailsList
-            items={props.items}
-            columns={columns}
-            layoutMode={DetailsListLayoutMode.justified}
-            selectionMode={SelectionMode.none}
-            />
-        </>
+        <section>
+            <header>
+                <h1>{props.collectionTitle}</h1>
+                <label htmlFor="isDefaultCollection">Is Default Collection?</label>
+                <input name="isDefaultCollection" type="checkbox" checked={isDefaultCollectionChecked} onChange={handleIsDefaultCheckedChange} />
+                <p>There are {props.items.length} games on display.</p>
+            </header>
+            <DetailsList
+                items={props.items}
+                columns={columns}
+                layoutMode={DetailsListLayoutMode.justified}
+                selectionMode={SelectionMode.none}
+                />
+        </section>
     );
 };
 export default CollectionList;
