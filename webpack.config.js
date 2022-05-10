@@ -22,7 +22,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx|tsx)$/i,
+        test: /\.(js|ts|tsx)$/i,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
         options: { 
@@ -52,7 +52,7 @@ module.exports = {
       }
     ]
   },
-  resolve: { extensions: ["*", ".js", ".jsx", ".tsx"] },
+  resolve: { extensions: ["*", ".js", ".ts", ".tsx"] },
   output: {
     path: path.resolve(__dirname, "dist/"),
     filename: "videogamelibrary.js",
