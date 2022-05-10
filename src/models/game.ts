@@ -59,5 +59,14 @@ class Game {
         return JSON.stringify(gameData);
     }
 
+    static serialize(game: Game) : string {
+        return game.serialize();
+    }
+
+    static serializeArray(games: Array<Game>) : string {
+        const serializedGames = games.map((g: Game)=> g.serialize());
+        return JSON.stringify(serializedGames);
+    }
+
 }
 export default Game;
