@@ -18,6 +18,7 @@ const mockLogger : ILogger = {
     warn: jest.fn()
 };
 beforeEach(()=> {
+    localStorage.clear();
     jest.clearAllMocks();
 });
 
@@ -68,7 +69,7 @@ describe("Save Collection", ()=> {
 
         // assert
         expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).not.toBe(undefined);
-        expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).toEqual(JSON.stringify(testCollection));
+        expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).toEqual(testCollection.serialize());
     });
 
     it("saves the ID of the default collection to local storage as config", ()=> {
@@ -86,9 +87,84 @@ describe("Save Collection", ()=> {
 });
 
 describe("Load Collection", ()=> {
-    it.todo("loads the named collection from local storage or undefined if not found");
-    it.todo("loads the default collection stored in local storage or undefined if not found");
-    it.todo("returns undefined if no default collection is set");
+    it("loads the named collection from local storage", ()=> {
+        // arrange data
+        const testCollectionId = "testCollection";
+        const testCollectionItems : Array<Game> = [
+            new Game("game1_snes", "Game One", "snes", "na"),
+            new Game("game2_snes", "Game Two", "snes", "na"),
+            new Game("game3_snes", "Game Three", "snes", "na")
+        ];
+        const testCollection = new Collection(testCollectionId, testCollectionItems); 
+
+        // arrange local storage
+        jest.spyOn(Storage.prototype, "getItem").mockImplementationOnce((key: string)=> {
+            return testCollection.serialize();
+        });
+
+        // act
+        const target = CollectionController.getInstance();
+        const result = target.loadCollection(testCollectionId);
+
+        // assert
+        expect(result).not.toBeUndefined();
+        expect(result.id).toEqual(testCollectionId);
+    });
+
+    it("returns undefined if collection is not found in local storage", ()=> {
+        // arrange, local storage
+        jest.spyOn(localStorage, "getItem").mockImplementationOnce((key: string)=> {
+            return null;
+        });
+
+        // act
+        const target = CollectionController.getInstance();
+        const result = target.loadCollection("thisIdDoesNotExist");
+
+        // assert
+        expect(result).not.toBeNull();
+        expect(result).toBeUndefined();
+    });
+
+    it("loads the default collection stored in local storage or undefined if not found", ()=> {
+        // arrange, data
+        const testCollectionId = "testCollection";
+        const testCollectionItems : Array<Game> = [
+            new Game("game1_snes", "Game One", "snes", "na"),
+            new Game("game2_snes", "Game Two", "snes", "na"),
+            new Game("game3_snes", "Game Three", "snes", "na")
+        ];
+        const testCollection = new Collection(testCollectionId, testCollectionItems);
+        // arrange, local storage
+        jest.spyOn(localStorage, "getItem").mockImplementationOnce((key: string) => { return testCollectionId });   // returns storage key
+        // arrange, CollectionController.loadCollection
+        const mockLoadCollection = jest.fn((id: string)=> {
+            return testCollection;
+        });
+        const target = CollectionController.getInstance();
+        target.loadCollection = mockLoadCollection;
+
+        // act
+        const result = target.loadDefaultCollection();
+
+        // assert
+        expect(result).not.toBeUndefined();
+        expect(result).toEqual(testCollection);
+    });
+
+    it("returns undefined if no default collection is set", ()=> {
+        // arrange, local storage
+        jest.spyOn(localStorage, "getItem").mockImplementationOnce((key: string)=> {
+            return null;
+        });
+
+        // act
+        const target = CollectionController.getInstance();
+        const result = target.loadDefaultCollection();
+
+        // arrange
+        expect(result).toBeUndefined();
+    });
 });
 
 describe("Read Collection File", ()=> {  

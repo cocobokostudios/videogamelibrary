@@ -32,6 +32,10 @@ class Game {
         this.price = price;
     }
 
+    static create(game: Game) {
+        return new Game(game.gameId, game.title, game.platformId, game.regionId, game.price);
+    }; 
+
 
     /**
      * Determine if the Game object has all required fields.

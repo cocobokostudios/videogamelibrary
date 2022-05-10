@@ -7,8 +7,8 @@ import Papa from "papaparse";
 import { PanelType } from "@fluentui/react";
 
 class CollectionController {
-    
     public static readonly STORAGE_PREFIX = "vgl";
+    private static readonly DEFAULT_COLLECTION_STORAGE_KEY = `vgl_config_defaultCollection`;
 
     private constructor(logger: ILogger = ConsoleLogger.getInstance()) { 
         this.collection = new Array<Game>();
@@ -56,19 +56,7 @@ class CollectionController {
         const fileContent = await file.text();
 
         // TODO: Add logic to support other file types
-
         return this.loadCollectionFromCSV(fileContent);
-    }
-
-    /**
-     * Loads all valid from JSON string into CollectionExplorer collection property.
-     * @param collection JSON array of {@type Game} objects.
-     * @returns {number} Returns Number of invalid game objects read from the collection.
-     */
-    async loadCollectionFromJSON(collection: string) : Promise<number> {
-        const parsedCollection: Array<Game> = JSON.parse(collection)
-        // TODO: get invalid entries
-        return this.loadCollection(parsedCollection);
     }
 
     /**
@@ -101,13 +89,43 @@ class CollectionController {
     }
 
     /**
+     * Generate a key used to save and load the collection from storage.
+     * @param collectionId ID of the @type {Collection} collection.
+     * @returns {string} Storage key value
+     */
+    private generateCollectionStorageKey(collectionId: string) {
+        return `vgl_collection_${collectionId}`;
+    }
+
+    /**
      * Replaces current collection with the provided Array.
      * @param collection {Array<Game>} Array of {@type Game} objects to replace the current collection.
      * @returns {number} Number of invalid game objects from imported collection.
      */
-    async loadCollection(collection: Array<Game>) : Promise<number> {
-        this.collection = collection;
-        return 0;   // TODO: get invalid entries
+    loadCollection(collectionId: string) : Collection | undefined {
+        const storageKey = this.generateCollectionStorageKey(collectionId);
+        const data = localStorage.getItem(storageKey);
+        if(data) {
+            const collectionData = JSON.parse(data) as Collection;
+            return new Collection(collectionData.id, collectionData.items);
+        }
+        else {
+            return undefined;
+        }
+    }
+
+    /**
+     * Loads the collection saved as default collection.
+     * @returns {Collection | undefined} Returns the collection loaded from storage, or undefined if no collection is found or no default collection is set.
+     */
+    loadDefaultCollection() : Collection | undefined {
+        const storedValue = localStorage.getItem(CollectionController.DEFAULT_COLLECTION_STORAGE_KEY);
+        if(storedValue === null) {
+            return undefined;
+        }
+        else {
+            return this.loadCollection(storedValue);
+        }
     }
 
     /**
@@ -116,8 +134,8 @@ class CollectionController {
      * @returns {void}
      */
     saveCollection(collection: Collection) {
-        const storageKey = `vgl_collection_${collection.id}`;
-        localStorage.setItem(storageKey, JSON.stringify(collection));
+        const storageKey = this.generateCollectionStorageKey(collection.id);
+        localStorage.setItem(storageKey, collection.serialize());
     }
 
     /**
@@ -126,8 +144,7 @@ class CollectionController {
      * @returns {void}
      */
     setDefaultCollection(collectionId: string) {
-        const storageKey = `vgl_config_defaultCollection`;
-        localStorage.setItem(storageKey, collectionId);
+        localStorage.setItem(CollectionController.DEFAULT_COLLECTION_STORAGE_KEY, collectionId);
     }
 }
 export default CollectionController;

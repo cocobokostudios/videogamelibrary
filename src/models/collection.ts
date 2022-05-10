@@ -7,7 +7,7 @@ class Collection {
 
     constructor(id: string, items: Array<Game> = new Array<Game>()) {
         this.id = id;
-        this.items = items;
+        this.items = [...items.map(item => Game.create(item))]
     }
 
     serialize(): string {
