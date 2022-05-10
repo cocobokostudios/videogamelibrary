@@ -146,5 +146,12 @@ class CollectionController {
     setDefaultCollection(collectionId: string) {
         localStorage.setItem(CollectionController.DEFAULT_COLLECTION_STORAGE_KEY, collectionId);
     }
+
+    /**
+     * Clear the default collection value in storage.
+     */
+    clearDefaultCollection() : void {
+        localStorage.removeItem(CollectionController.DEFAULT_COLLECTION_STORAGE_KEY);
+    }
 }
 export default CollectionController;

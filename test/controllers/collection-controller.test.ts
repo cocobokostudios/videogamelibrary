@@ -84,6 +84,19 @@ describe("Save Collection", ()=> {
         expect(localStorage.getItem(`vgl_config_defaultCollection`)).not.toBe(undefined);
         expect(localStorage.getItem(`vgl_config_defaultCollection`)).toEqual(defaultCollectionId);
     });
+
+    it("clears the ID of the default collection in local storage", ()=> {
+        // arrange, local storage
+        const defaultCollectionId = "myCollectionId";
+        localStorage.setItem("vgl_config_defaultCollection", defaultCollectionId);
+
+        // act
+        const target = CollectionController.getInstance();
+        target.clearDefaultCollection();
+
+        // assert
+        expect(localStorage.getItem("vgl_config_defaultCollection")).toBe(null);
+    });
 });
 
 describe("Load Collection", ()=> {
