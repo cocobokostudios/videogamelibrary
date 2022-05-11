@@ -5,6 +5,7 @@ import { useBoolean } from "@fluentui/react-hooks";
 import styles from "../styles/collection-explorer.module.css";
 import CollectionController from "../controllers/collection-controller";
 import CollectionList from "./collection-list";
+import Collection from "../models/collection";
 import Game from "../models/game";
 
 export const COLLECTION_EXPLORER_TESTID = "collection-explorer";
@@ -13,8 +14,13 @@ export const COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID = "collection-exp
 
 const CollectionExplorer : React.FunctionComponent = () =>  {
     const [hideLoadDialog, { toggle: toggleHideLoadDialog }] = useBoolean(true);
-    const [loadedCollection, setLoadedCollection] = React.useState<Array<Game>>([]);
-    const [collection, setCollection] = React.useState<Array<Game>>([]);
+    const [loadedCollection, setLoadedCollection] = React.useState<Collection>(new Collection("myLoadedCollection"));
+
+    const [collection, setCollection] = React.useState<Collection>(new Collection("myGameCollection"));
+    const defaultCollection = CollectionController.getInstance().loadDefaultCollection();
+    if(defaultCollection && defaultCollection.id !== collection.id) {
+        setCollection(defaultCollection);
+    }
 
     const loadDialogContentProps: IDialogContentProps = {
         title: "Load Collection",
@@ -50,7 +56,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         setCollection(loadedCollection);
 
         // clear loaded collection
-        setLoadedCollection([]);
+        setLoadedCollection(new Collection("myLoadedCollection"));
 
         // close dialogue
         toggleHideLoadDialog();
@@ -60,7 +66,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         e.preventDefault();
 
         // clear loaded collection
-        setLoadedCollection([]);
+        setLoadedCollection(new Collection("myLoadedCollection"));
 
         // close dialogue
         toggleHideLoadDialog();
@@ -74,9 +80,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
             </header>
             <main>
                 <CollectionList 
-                    collectionId="myCollection"
-                    collectionTitle="My Collection"
-                    items={collection} />
+                    collection={collection} />
             </main>
         </section>
         <Dialog

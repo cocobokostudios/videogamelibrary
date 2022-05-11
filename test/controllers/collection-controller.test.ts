@@ -1,17 +1,12 @@
-import fs from "fs/promises";
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-//import { mock } from "jest-mock-extended";
-
 import CollectionController from "../../src/controllers/collection-controller";
 import Game from "../../src/models/game";
 import Collection from "../../src/models/collection";
-import ConsoleLogger from "../../src/utils/ConsoleLogger";
 import ILogger from "../../src/utils/ILogger";
 
-import validJSONCollectionData from "../data/test-collection.json";
 
 const mockLogger : ILogger = {
     error: jest.fn(),
@@ -69,7 +64,7 @@ describe("Save Collection", ()=> {
 
         // assert
         expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).not.toBe(undefined);
-        expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).toEqual(testCollection.serialize());
+        expect(localStorage.getItem(`vgl_collection_${testCollectionId}`)).toEqual(JSON.stringify(testCollection.serialize()));
     });
 
     it("saves the ID of the default collection to local storage as config", ()=> {
@@ -112,16 +107,16 @@ describe("Load Collection", ()=> {
 
         // arrange local storage
         jest.spyOn(Storage.prototype, "getItem").mockImplementationOnce((key: string)=> {
-            return testCollection.serialize();
+            return JSON.stringify(testCollection.serialize());
         });
 
         // act
-        const target = CollectionController.getInstance();
-        const result = target.loadCollection(testCollectionId);
+        const result = CollectionController.getInstance().loadCollection(testCollectionId);
 
         // assert
         expect(result).not.toBeUndefined();
         expect(result.id).toEqual(testCollectionId);
+        expect(result.items).toEqual(testCollectionItems);
     });
 
     it("returns undefined if collection is not found in local storage", ()=> {
@@ -183,6 +178,7 @@ describe("Load Collection", ()=> {
 describe("Read Collection File", ()=> {  
     it("parses CSV file into Game objects", async ()=> {
         // arrange
+        const testCollectionId = "testCollection";
         const testFileContent = `
             gameId,title,platformId,regionId
             simcity_snes,SimCity,snes,na
@@ -190,23 +186,25 @@ describe("Read Collection File", ()=> {
             uncharted-waters_nes,Uncharted Waters,nes,na
             uncharted-waters-new-horizons_snes,Uncharted Waters: New Horizons,snes,na
         `.trim();
-        const testFile = new File([testFileContent], "collection.csv", {type: "text/csv"});
+        const testFile = new File([testFileContent], `${testCollectionId}.csv`, {type: "text/csv"});
         testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
         const target = CollectionController.getInstance();
 
         // act
-        const result = await target.loadCollectionFromFile(testFile);
+        const result : Collection = await target.loadCollectionFromFile(testFile);
 
         // assert
-        expect(result.length).toEqual(4);
-        expect(result[0].gameId).toBe("simcity_snes");
-        expect(result[1].gameId).toBe("uncharted-waters_snes");
-        expect(result[2].gameId).toBe("uncharted-waters_nes");
-        expect(result[3].gameId).toBe("uncharted-waters-new-horizons_snes");
+        expect(result.id).toEqual(testCollectionId);
+        expect(result.items.length).toEqual(4);
+        expect(result.items[0].gameId).toBe("simcity_snes");
+        expect(result.items[1].gameId).toBe("uncharted-waters_snes");
+        expect(result.items[2].gameId).toBe("uncharted-waters_nes");
+        expect(result.items[3].gameId).toBe("uncharted-waters-new-horizons_snes");
     });
 
     it("logs CSV entries unable to be parsed as warnings", async ()=> {
         // arrange file withone valid entry
+        const testCollectionId = "testCollection";
         const testFileContent = `
             gameId,title,platformId,regionId
             invalid-entry_snes,,snes
@@ -214,17 +212,18 @@ describe("Read Collection File", ()=> {
             another_entry,title
             valid-game_snes,Valid Game,snes,jp
         `.trim();
-        const testFile = new File([testFileContent], "collection.csv", {type: "text/csv"});
+        const testFile = new File([testFileContent], `${testCollectionId}.csv`, {type: "text/csv"});
         testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
 
         // arrange target to test
         const target = CollectionController.resetInstance(mockLogger);
 
         // act
-        const result = await target.loadCollectionFromFile(testFile);
+        const result : Collection = await target.loadCollectionFromFile(testFile);
 ``
         // assert
-        expect(result.length).toEqual(4);
+        expect(result.id).toEqual(testCollectionId);
+        expect(result.items.length).toEqual(4);
         expect(mockLogger.warn).toBeCalledTimes(3);
     });
 });

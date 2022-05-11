@@ -1,17 +1,17 @@
 import * as React from "react";
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, IColumn, registerOnThemeChangeCallback, SelectionMode } from "@fluentui/react";
 
 import Game from "../models/game";
+import Collection from "../models/collection";
 import { PrimaryButton } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import CollectionController from "../controllers/collection-controller";
 
 export interface ICollectionListProps {
-    collectionId: string;
-    collectionTitle: string;
-    items: Array<Game>;
+    collection: Collection;
 }
 
-const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) => {
+const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ collection }) => {
     const defaultColumns: IColumn[] = [
         {
             key: "platformCol",
@@ -36,7 +36,7 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) =
             minWidth: 40,
             maxWidth: 60,
             onRender: (item: Game) => {
-                return <span>JP</span>
+                return <span>{item.regionId}</span>
             }
         },
         {
@@ -72,7 +72,7 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) =
             minWidth: 40,
             maxWidth: 60,
             onRender: (item: Game) => {
-                return <span>$ 1.23</span>
+                return (Number.isNaN(item.price) === false) ? <span>{item.price}</span> : <span>-</span>
             }
         }
     ];
@@ -85,20 +85,26 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = (props) =
     }
 
     React.useEffect(()=> {
-        // on state change, save the change here.
-        //CollectionController.getInstance().setDefaultCollection(props.collectionId)
+        // set or clear default collection
+        if(isDefaultCollectionChecked === true) {
+            CollectionController.getInstance().setDefaultCollection(collection.id);
+            CollectionController.getInstance().saveCollection(collection);
+        }
+        else {
+            CollectionController.getInstance().clearDefaultCollection();
+        }
     }, [isDefaultCollectionChecked]);
 
     return (
         <section>
             <header>
-                <h1>{props.collectionTitle}</h1>
+                <h1>My Game Collection</h1>
                 <label htmlFor="isDefaultCollection">Is Default Collection?</label>
                 <input name="isDefaultCollection" type="checkbox" checked={isDefaultCollectionChecked} onChange={handleIsDefaultCheckedChange} />
-                <p>There are {props.items.length} games on display.</p>
+                <p>There are {collection.items.length} games on display.</p>
             </header>
             <DetailsList
-                items={props.items}
+                items={collection.items}
                 columns={columns}
                 layoutMode={DetailsListLayoutMode.justified}
                 selectionMode={SelectionMode.none}

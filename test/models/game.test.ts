@@ -1,12 +1,21 @@
 import { _ } from "ajv";
 import Game, { IGame } from "../../src/models/game";
 
-it("intializes price as NaN if none is set", ()=> {
+it("intializes price as NaN if null or not included", ()=> {
     // arrange and act
     const testGame = new Game("testGameId", "testTitle", "testPlatform", "testRegion");
+    const dataObj : IGame = {
+        gameId: "testStatidId",
+        title: "testStaticTitle",
+        platformId: "testStaticPlatform",
+        regionId: "testStaticRegion",
+        price: null
+    };
+    const testStaticGame = Game.create(dataObj);
 
     // assert
     expect(testGame.price).toBeNaN();
+    expect(testStaticGame.price).toBeNaN();
 });
 
 describe("Serialization", ()=> {

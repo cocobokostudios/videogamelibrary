@@ -41,11 +41,12 @@ class Game implements IGame {
     }
 
     static create(game: IGame) : Game {
-        const newGame = Object.assign(Object.create(Game), game);
-        if(newGame.price === null || newGame.price === undefined) {
-            newGame.price = Number.NaN;
+        if(game.price !== null) {
+            return new Game(game.gameId, game.title, game.platformId, game.regionId, game.price);
         }
-        return newGame;
+        else {
+            return new Game(game.gameId, game.title, game.platformId, game.regionId);
+        }
     }; 
 
 

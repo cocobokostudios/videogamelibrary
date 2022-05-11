@@ -1,5 +1,5 @@
-import Game from "../models/game";
-import Collection from "../models/collection";
+import Game, { IGame } from "../models/game";
+import Collection, { ICollection } from "../models/collection";
 import ConsoleLogger from "../utils/ConsoleLogger";
 import ILogger from "../utils/ILogger";
 
@@ -52,11 +52,12 @@ class CollectionController {
      * @param {File} file CSV File object from FileList containing collection data.
      * @returns {Array<Game>} Returns the collection of {@type Game} objects loaded from the provided file.
      */
-    async loadCollectionFromFile(file: File) : Promise<Array<Game>> {
+    async loadCollectionFromFile(file: File) : Promise<Collection> {
         const fileContent = await file.text();
 
         // TODO: Add logic to support other file types
-        return this.loadCollectionFromCSV(fileContent);
+        const collectionId = file.name.split(".")[0];
+        return this.loadCollectionFromCSV(collectionId, fileContent);
     }
 
     /**
@@ -64,7 +65,7 @@ class CollectionController {
      * @param collection CSV file contents
      * @returns {Array<Game>} Array of {@type Game} objects, which are the collection loaded from the CSV string.
      */
-    async loadCollectionFromCSV(collection: string) : Promise<Array<Game>> {
+    async loadCollectionFromCSV(collectionId: string, collection: string) : Promise<Collection> {
         const parsedCollection: Array<Game> = [];
         const parserOptions : Papa.ParseConfig = {
             header: true,
@@ -85,7 +86,7 @@ class CollectionController {
         };
         
         Papa.parse(collection, parserOptions);
-        return parsedCollection;
+        return new Collection(collectionId, parsedCollection);
     }
 
     /**
@@ -106,8 +107,9 @@ class CollectionController {
         const storageKey = this.generateCollectionStorageKey(collectionId);
         const data = localStorage.getItem(storageKey);
         if(data) {
-            const collectionData = JSON.parse(data) as Collection;
-            return new Collection(collectionData.id, collectionData.items);
+            const collectionData = JSON.parse(data) as ICollection;
+            const collectionItems = collectionData.items.map<Game>((game: IGame) => Game.create(game) );
+            return new Collection(collectionData.id, collectionItems);
         }
         else {
             return undefined;
@@ -135,7 +137,7 @@ class CollectionController {
      */
     saveCollection(collection: Collection) {
         const storageKey = this.generateCollectionStorageKey(collection.id);
-        localStorage.setItem(storageKey, collection.serialize());
+        localStorage.setItem(storageKey, JSON.stringify(collection.serialize()));
     }
 
     /**
