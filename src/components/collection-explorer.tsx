@@ -1,5 +1,5 @@
 import * as React from "react";
-import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps, DialogFooter, PrimaryButton, DefaultButton } from "@fluentui/react";
+import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps, DialogFooter, PrimaryButton, DefaultButton, IContextualMenuItemProps, TextField, Toggle, IconButton } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
@@ -29,10 +29,20 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
     };
     const commandItems: ICommandBarItemProps[] = [
         {
-            key: "loadCommandItem",
-            text: "Load",
+            key: "importCommandItem",
+            text: "Import",
             iconProps: { iconName: "Upload" },
             onClick: toggleHideLoadDialog 
+        },
+        {
+            key: "exportCommandItem",
+            text: "Export",
+            iconProps: { iconName: "Download" }
+        },
+        {
+            key: "titleCommandItem",
+            text: "Title",
+            iconProps: { iconName: "Text" }
         }
     ];
 
@@ -76,11 +86,16 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         <>
         <section data-testid={COLLECTION_EXPLORER_TESTID} className={styles.CollectionExplorer} >
             <header>
-                <CommandBar data-testid={COLLECTION_EXPLORER_COMMAND_BAR_TESTID} items={commandItems} />
+                <section className={styles.left}>
+                    <TextField value={collection.id} underlined />
+                </section>
+                <section className={styles.right}>
+                    <IconButton iconProps={{ iconName: "Upload" }} />
+                    <IconButton iconProps={{ iconName: "Download" }} />
+                    <Toggle label={"Is Default"} checked={true} inlineLabel />
+                </section>
             </header>
             <main>
-                <label htmlFor="isDefaultCollection">Is Default Collection?</label>
-                <input name="isDefaultCollection" type="checkbox" />
                 <CollectionList 
                     title={collection.id}
                     items={collection.items} />

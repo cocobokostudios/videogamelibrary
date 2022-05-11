@@ -82,10 +82,6 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ items,
 
     return (
         <section>
-            <header>
-                <h1>{title}</h1>
-                <p>There are {items.length} games on display.</p>
-            </header>
             <DetailsList
                 items={items}
                 columns={columns}
