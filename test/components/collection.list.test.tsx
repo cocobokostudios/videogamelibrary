@@ -9,12 +9,15 @@ import Game from "../../src/models/game";
 
 it("shows the platform, title, region, and price by default", ()=> {
     // arrange
-    const testCollection : Array<Game> = [
-        new Game("uncharted-waters_snes", "Uncharted Waters", "snes")
+    const testCollectionItems : Array<Game> = [
+        new Game("uncharted-waters_snes", "Uncharted Waters", "snes", "jp", 1.99)
     ];
 
     // act
-    render(<CollectionList items={testCollection} />);
+    render(<CollectionList 
+        title="MyTestCollection"
+        items={testCollectionItems} 
+        />);
 
     // assert
     expect(screen.getByText(/platform/i)).not.toBeNull();

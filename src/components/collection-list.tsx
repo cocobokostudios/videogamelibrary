@@ -8,10 +8,11 @@ import { useBoolean } from "@fluentui/react-hooks";
 import CollectionController from "../controllers/collection-controller";
 
 export interface ICollectionListProps {
-    collection: Collection;
+    title: string
+    items: Array<Game>
 }
 
-const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ collection }) => {
+const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ items, title }) => {
     const defaultColumns: IColumn[] = [
         {
             key: "platformCol",
@@ -77,34 +78,16 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ collec
         }
     ];
 
-    const [isDefaultCollectionChecked, { toggle: toggleIsDefaultCollectionChecked }] = useBoolean(false);
     const [columns, setColumns] = React.useState(defaultColumns);
-
-    const handleIsDefaultCheckedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        toggleIsDefaultCollectionChecked();
-    }
-
-    React.useEffect(()=> {
-        // set or clear default collection
-        if(isDefaultCollectionChecked === true) {
-            CollectionController.getInstance().setDefaultCollection(collection.id);
-            CollectionController.getInstance().saveCollection(collection);
-        }
-        else {
-            CollectionController.getInstance().clearDefaultCollection();
-        }
-    }, [isDefaultCollectionChecked]);
 
     return (
         <section>
             <header>
-                <h1>My Game Collection</h1>
-                <label htmlFor="isDefaultCollection">Is Default Collection?</label>
-                <input name="isDefaultCollection" type="checkbox" checked={isDefaultCollectionChecked} onChange={handleIsDefaultCheckedChange} />
-                <p>There are {collection.items.length} games on display.</p>
+                <h1>{title}</h1>
+                <p>There are {items.length} games on display.</p>
             </header>
             <DetailsList
-                items={collection.items}
+                items={items}
                 columns={columns}
                 layoutMode={DetailsListLayoutMode.justified}
                 selectionMode={SelectionMode.none}

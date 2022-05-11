@@ -79,8 +79,11 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
                 <CommandBar data-testid={COLLECTION_EXPLORER_COMMAND_BAR_TESTID} items={commandItems} />
             </header>
             <main>
+                <label htmlFor="isDefaultCollection">Is Default Collection?</label>
+                <input name="isDefaultCollection" type="checkbox" />
                 <CollectionList 
-                    collection={collection} />
+                    title={collection.id}
+                    items={collection.items} />
             </main>
         </section>
         <Dialog
