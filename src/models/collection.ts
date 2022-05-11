@@ -1,26 +1,29 @@
-import ILogger from "../utils/ILogger";
-import Game from "./game";
+import { _ } from "ajv";
+import Game, { IGame } from "./game";
 
-class Collection {
+export interface ICollection {
+    id: string;
+    items: Array<IGame>;
+}
+
+class Collection implements ICollection {
     id: string;
     items: Array<Game>;
 
     constructor(id: string, items: Array<Game> = new Array<Game>()) {
         this.id = id;
-        this.items = [...items.map(item => Game.create(item))]
+        this.items = items;
     }
 
-    serialize(): string {
-        const dataObject = {
+    serialize(): ICollection {
+        const dataObject : ICollection = {
             id: this.id,
-            items: [
-                ...this.items.map(item => item.serialize())
-            ]
+            items: Game.serializeArray(this.items)
         }
-        return JSON.stringify(dataObject);
+        return dataObject;
     }
 
-    static serialize(collection: Collection): string {
+    static serialize(collection: Collection): ICollection {
         return collection.serialize();
     }
 }

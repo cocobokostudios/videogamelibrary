@@ -1,5 +1,5 @@
-import Collection from "../../src/models/collection";
-import Game from "../../src/models/game";
+import Collection, { ICollection } from "../../src/models/collection";
+import Game, { IGame } from "../../src/models/game";
 
 it("initializes with an empty list by defaults", () => {
     // arrange
@@ -21,17 +21,18 @@ describe("Serialization", () => {
         const testItems : Array<Game> = [testGame1, testGame2];
 
         // act
-        const result = new Collection(testId, testItems).serialize();
+        const target = new Collection(testId, testItems);
+        const result : ICollection = target.serialize();
 
         // assert
-        const expectedResultData = {
+        const expectedResultData : ICollection = {
             id: testId,
             items: [
                 testGame1.serialize(),
                 testGame2.serialize()
             ]
         };
-        expect(result).toBe(JSON.stringify(expectedResultData));
+        expect(result).toStrictEqual(expectedResultData);
     });
 
     it("serializes only data properties to JSON (static)", () => {
@@ -42,17 +43,16 @@ describe("Serialization", () => {
         const testItems : Array<Game> = [testGame1, testGame2];
 
         // act
-        const testCollection = new Collection(testId, testItems);
-        const result = Collection.serialize(testCollection);
+        const result : ICollection = Collection.serialize(new Collection(testId, testItems));
 
         // assert
-        const expectedResultData = {
+        const expectedResultData : ICollection = {
             id: testId,
             items: [
                 testGame1.serialize(),
                 testGame2.serialize()
             ]
         };
-        expect(result).toBe(JSON.stringify(expectedResultData));
+        expect(result).toStrictEqual(expectedResultData);
     });
 });

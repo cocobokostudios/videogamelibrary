@@ -1,100 +1,108 @@
-import Game from "../../src/models/game";
+import { _ } from "ajv";
+import Game, { IGame } from "../../src/models/game";
 
-it("serializes all properties to JSON", ()=> {
-    // arrange
-    const testId = "testId";
-    const testTitle = "testTitle";
-    const testPlatform = "testPlatform";
-    const testRegion = "testRegion";
-    const testPrice = 1.23;
-    const targetNoPrice = new Game(testId, testTitle, testPlatform, testRegion);
-    const targetWithPrice = new Game(testId, testTitle, testPlatform, testRegion, testPrice);
-
-    // act
-    const resultNoPrice = targetNoPrice.serialize();
-    const resultWithPrice = targetWithPrice.serialize();
+it("intializes price as NaN if none is set", ()=> {
+    // arrange and act
+    const testGame = new Game("testGameId", "testTitle", "testPlatform", "testRegion");
 
     // assert
-    const expectedNoPriceObject =
-    {
-        gameId: testId,
-        title: testTitle,
-        platformId: testPlatform,
-        regionId: testRegion,
-        price: Number.NaN.toString()
-    };
-    expect(resultNoPrice).toBe(JSON.stringify(expectedNoPriceObject));
-
-    const expectedWithPriceObject =
-    {
-        gameId: testId,
-        title: testTitle,
-        platformId: testPlatform,
-        regionId: testRegion,
-        price: testPrice
-    };
-    expect(resultWithPrice).toBe(JSON.stringify(expectedWithPriceObject));
+    expect(testGame.price).toBeNaN();
 });
 
-it("serializes all properties to JSON (static)", ()=> {
-    // arrange
-    const testId = "testId";
-    const testTitle = "testTitle";
-    const testPlatform = "testPlatform";
-    const testRegion = "testRegion";
-    const testPrice = 1.23;
-    const targetNoPrice = new Game(testId, testTitle, testPlatform, testRegion);
-    const targetWithPrice = new Game(testId, testTitle, testPlatform, testRegion, testPrice);
-
-    // act
-    const resultNoPrice = Game.serialize(targetNoPrice);
-    const resultWithPrice = Game.serialize(targetWithPrice);
-
-    // assert
-    const expectedNoPriceObject =
-    {
-        gameId: testId,
-        title: testTitle,
-        platformId: testPlatform,
-        regionId: testRegion,
-        price: Number.NaN.toString()
-    };
-    expect(resultNoPrice).toBe(JSON.stringify(expectedNoPriceObject));
-
-    const expectedWithPriceObject =
-    {
-        gameId: testId,
-        title: testTitle,
-        platformId: testPlatform,
-        regionId: testRegion,
-        price: testPrice
-    };
-    expect(resultWithPrice).toBe(JSON.stringify(expectedWithPriceObject));
+describe("Serialization", ()=> {
+    it("serializes all properties to JSON", ()=> {
+        // arrange
+        const testId = "testId";
+        const testTitle = "testTitle";
+        const testPlatform = "testPlatform";
+        const testRegion = "testRegion";
+        const testPrice = 1.23;
+        const targetNoPrice = new Game(testId, testTitle, testPlatform, testRegion);
+        const targetWithPrice = new Game(testId, testTitle, testPlatform, testRegion, testPrice);
+    
+        // act
+        const resultNoPrice : IGame = targetNoPrice.serialize();
+        const resultWithPrice : IGame = targetWithPrice.serialize();
+    
+        // assert
+        const expectedNoPriceObject : IGame =
+        {
+            gameId: testId,
+            title: testTitle,
+            platformId: testPlatform,
+            regionId: testRegion,
+            price: Number.NaN
+        };
+        expect(resultNoPrice).toStrictEqual(expectedNoPriceObject);
+    
+        const expectedWithPriceObject : IGame =
+        {
+            gameId: testId,
+            title: testTitle,
+            platformId: testPlatform,
+            regionId: testRegion,
+            price: testPrice
+        };
+        expect(resultWithPrice).toStrictEqual(expectedWithPriceObject);
+    });
+    
+    it("serializes all properties to JSON (static)", ()=> {
+        // arrange
+        const testId = "testId";
+        const testTitle = "testTitle";
+        const testPlatform = "testPlatform";
+        const testRegion = "testRegion";
+        const testPrice = 1.23;
+        const targetNoPrice = new Game(testId, testTitle, testPlatform, testRegion);
+        const targetWithPrice = new Game(testId, testTitle, testPlatform, testRegion, testPrice);
+    
+        // act
+        const resultNoPrice : IGame = Game.serialize(targetNoPrice);
+        const resultWithPrice : IGame = Game.serialize(targetWithPrice);
+    
+        // assert
+        const expectedNoPriceObject : IGame =
+        {
+            gameId: testId,
+            title: testTitle,
+            platformId: testPlatform,
+            regionId: testRegion,
+            price: Number.NaN
+        };
+        expect(resultNoPrice).toStrictEqual(expectedNoPriceObject);
+    
+        const expectedWithPriceObject : IGame =
+        {
+            gameId: testId,
+            title: testTitle,
+            platformId: testPlatform,
+            regionId: testRegion,
+            price: testPrice
+        };
+        expect(resultWithPrice).toStrictEqual(expectedWithPriceObject);
+    });
+    
+    it("serializes collection of games to JSON array", ()=> {
+        // arrange, sample data
+        const testId = "testId";
+        const testTitle = "testTitle";
+        const testPlatform = "testPlatform";
+        const testRegion = "testRegion";
+        const testPrice = 1.23;
+    
+        // arrange, array of games
+        const game1 = new Game(testId, testTitle, testPlatform, testRegion);
+        const game2 = new Game(testId, testTitle, testPlatform, testRegion, testPrice);
+        const target : Array<Game> = [game1, game2];
+    
+        // act
+        const result : Array<IGame> = Game.serializeArray(target);
+    
+        // assert
+        const expectedData : Array<IGame> = [game1.serialize(), game2.serialize()];
+        expect(result).toEqual(expectedData);
+    });
 });
 
-it("serializes collection of games to JSON array", ()=> {
-    // arrange, sample data
-    const testId = "testId";
-    const testTitle = "testTitle";
-    const testPlatform = "testPlatform";
-    const testRegion = "testRegion";
-    const testPrice = 1.23;
-
-    // arrange, collection
-    const target = new Array<Game>();
-    const game1 = new Game(testId, testTitle, testPlatform, testRegion);
-    const game2 = new Game(testId, testTitle, testPlatform, testRegion, testPrice);
-    target.push(game1, game2);
-
-    // act
-    const result = Game.serializeArray(target);
-
-    // assert
-    const expectedData = [
-        game1.serialize(),
-        game2.serialize()
-    ];
-    expect(result).toEqual(JSON.stringify(expectedData));
-});
 
 

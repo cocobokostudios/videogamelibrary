@@ -5,12 +5,20 @@ import ConsoleLogger from "../utils/ConsoleLogger";
 import * as GameSchema from "../schemas/game.schema.json";
 import { isValidElement } from "react";
 
+export interface IGame {
+    gameId: string;
+    title: string;
+    platformId: string;
+    regionId: string;
+    price: number;
+}
+
 /**
  * Creates a Game object that represents a game in a collection.
  * @class
  * 
  */
-class Game {
+class Game implements IGame {
     /** @member {string} gameId Unique identifier for the game */
     public gameId: string;
     /** @member {string} title The title of the game that is displayed in user interfaces */
@@ -24,16 +32,20 @@ class Game {
     
     private logger: ILogger = ConsoleLogger.getInstance();
 
-    constructor(gameId: string, gameTitle: string, platformId: string, regionId: string, price: number = Number.NaN) {        
-        this.gameId = gameId;
-        this.title = gameTitle;
+    constructor(id: string, title: string, platformId: string, regionId: string, price: number = Number.NaN) {        
+        this.gameId = id;
+        this.title = title;
         this.platformId = platformId;
         this.regionId = regionId;
         this.price = price;
     }
 
-    static create(game: Game) {
-        return new Game(game.gameId, game.title, game.platformId, game.regionId, game.price);
+    static create(game: IGame) : Game {
+        const newGame = Object.assign(Object.create(Game), game);
+        if(newGame.price === null || newGame.price === undefined) {
+            newGame.price = Number.NaN;
+        }
+        return newGame;
     }; 
 
 
@@ -52,24 +64,23 @@ class Game {
         return isValid;
     }
 
-    public serialize() : string {
-        const gameData = {
+    public serialize() : IGame {
+        const gameData : IGame = {
             gameId: this.gameId,
             title: this.title,
             platformId: this.platformId,
             regionId: this.regionId,
-            price: (Number.isNaN(this.price)) ? Number.NaN.toString() : this.price
-        }
-        return JSON.stringify(gameData);
+            price: (Number.isNaN(this.price)) ? Number.NaN : this.price
+        };
+        return gameData;
     }
 
-    static serialize(game: Game) : string {
+    static serialize(game: Game) : IGame {
         return game.serialize();
     }
 
-    static serializeArray(games: Array<Game>) : string {
-        const serializedGames = games.map((g: Game)=> g.serialize());
-        return JSON.stringify(serializedGames);
+    static serializeArray(games: Array<Game>) : Array<IGame> {
+        return games.map<IGame>((g: Game)=> Game.serialize(g));
     }
 
 }
