@@ -14,39 +14,19 @@ export const COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID = "collection-exp
 
 const CollectionExplorer : React.FunctionComponent = () =>  {
     const [hideLoadDialog, { toggle: toggleHideLoadDialog }] = useBoolean(true);
-    const [loadedCollection, setLoadedCollection] = React.useState<Collection>(new Collection("myLoadedCollection"));
 
-    const [collection, setCollection] = React.useState<Collection>(new Collection("myGameCollection"));
-    const defaultCollection = CollectionController.getInstance().loadDefaultCollection();
-    if(defaultCollection && defaultCollection.id !== collection.id) {
-        setCollection(defaultCollection);
-    }
+    const [loadedCollection, setLoadedCollection] = React.useState<Collection>(new Collection("myLoadedCollection"));  
+
+    const [activeCollection, setActiveCollection] = React.useState<Collection>(new Collection("myGameCollection"));
+    const [isDefaultCollection, { toggle: toggleIsDefaultCollection, setTrue: setIsDefaultCollection, setFalse: unsetIsDefaultCollection }] = useBoolean(false);
+
+
 
     const loadDialogContentProps: IDialogContentProps = {
         title: "Load Collection",
         showCloseButton: true,
         closeButtonAriaLabel: "Close"
     };
-    const commandItems: ICommandBarItemProps[] = [
-        {
-            key: "importCommandItem",
-            text: "Import",
-            iconProps: { iconName: "Upload" },
-            onClick: toggleHideLoadDialog 
-        },
-        {
-            key: "exportCommandItem",
-            text: "Export",
-            iconProps: { iconName: "Download" }
-        },
-        {
-            key: "titleCommandItem",
-            text: "Title",
-            iconProps: { iconName: "Text" }
-        }
-    ];
-
-
 
     const onFileInputChange = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -63,7 +43,13 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         e.preventDefault();
 
         // update the collection
-        setCollection(loadedCollection);
+        setActiveCollection(loadedCollection);
+        if(loadedCollection.id === CollectionController.getInstance().loadDefaultCollection()?.id) {
+            setIsDefaultCollection();
+        }
+        else {
+            unsetIsDefaultCollection();
+        }
 
         // clear loaded collection
         setLoadedCollection(new Collection("myLoadedCollection"));
@@ -82,23 +68,42 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         toggleHideLoadDialog();
     }
 
+    // effect for loading default collection on mount
+    React.useEffect(() => {
+        const defaultCollection = CollectionController.getInstance().loadDefaultCollection();
+        if(defaultCollection && defaultCollection.id !== activeCollection.id) {
+            setActiveCollection(defaultCollection);
+            setIsDefaultCollection();
+        }
+    }, []);
+
+    // effect for setting the default collection
+    React.useEffect(() => {
+        if(isDefaultCollection === true && activeCollection) {
+            CollectionController.getInstance().setDefaultCollection(activeCollection.id);
+        }
+        else if(isDefaultCollection === false && activeCollection.id === CollectionController.getInstance().loadDefaultCollection()?.id) {
+            CollectionController.getInstance().clearDefaultCollection();
+        }
+    }, [isDefaultCollection]);
+
     return (
         <>
         <section data-testid={COLLECTION_EXPLORER_TESTID} className={styles.CollectionExplorer} >
             <header>
                 <section className={styles.left}>
-                    <TextField value={collection.id} underlined />
+                    <TextField value={activeCollection.id} underlined />
                 </section>
                 <section className={styles.right}>
-                    <IconButton iconProps={{ iconName: "Upload" }} />
+                    <IconButton iconProps={{ iconName: "Upload" }} onClick={toggleHideLoadDialog} />
                     <IconButton iconProps={{ iconName: "Download" }} />
-                    <Toggle label={"Is Default"} checked={true} inlineLabel />
+                    <Toggle label={"Is Default"} checked={isDefaultCollection} inlineLabel onClick={toggleIsDefaultCollection} />
                 </section>
             </header>
             <main>
                 <CollectionList 
-                    title={collection.id}
-                    items={collection.items} />
+                    title={activeCollection.id}
+                    items={activeCollection.items} />
             </main>
         </section>
         <Dialog
