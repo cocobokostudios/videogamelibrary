@@ -86,8 +86,8 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
                     <TextField value={activeCollection.id} underlined />
                 </section>
                 <section className={styles.right}>
-                    <IconButton iconProps={{ iconName: "Upload" }} onClick={toggleDialogueVisibility} />
-                    <IconButton iconProps={{ iconName: "Download" }} />
+                    <IconButton ariaLabel="Load" iconProps={{ iconName: "Upload" }} onClick={toggleDialogueVisibility} />
+                    <IconButton ariaLabel="Export" iconProps={{ iconName: "Download" }} />
                     <Toggle label={"Is Default"} checked={isDefaultCollection} inlineLabel onClick={toggleIsDefaultCollection} />
                 </section>
             </header>

@@ -9,6 +9,10 @@ export interface ICollectionLoadDialogueProps {
     onDismissClick(e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void;
 }
 
+export const TESTIDS : any = {
+    FILE_INPUT: "loadCollectionInput"
+}
+
 const CollectionLoadDialogue = ({ hidden, onCancelClick, onDismissClick, onLoadClick, onFileInputChange }: ICollectionLoadDialogueProps) => {
     const dialogProps: IDialogContentProps = {
         title: "Load Collection",
@@ -23,7 +27,7 @@ const CollectionLoadDialogue = ({ hidden, onCancelClick, onDismissClick, onLoadC
             dialogContentProps={dialogProps}>
                 Select a file to load your collection.
                 <input id="loadCollectionInput"
-                    data-testid="loadCollectionInput"
+                    data-testid={TESTIDS.FILE_INPUT}
                     type="file"
                     accept="text/csv"
                     onChange={onFileInputChange} />

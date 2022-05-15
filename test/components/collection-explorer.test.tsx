@@ -10,6 +10,7 @@ import CollectionExplorer, {
         COLLECTION_EXPLORER_COMMAND_BAR_TESTID,
         COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID 
     } from "../../src/components/collection-explorer";
+import { TESTIDS as LOADDIALOG_TESTIDS } from "../../src/components/collection-load-dialogue";
 
 beforeEach(()=> {
     initializeIcons(undefined, { disableWarnings: true });
@@ -19,28 +20,16 @@ beforeEach(()=> {
 });
 afterEach(cleanup);
 
-it("has the command bar in the header", async ()=> {
-    // arrange
-    render(<CollectionExplorer />);
-
-    // act
-    await waitFor(()=> screen.getAllByRole("banner"));
-
-    // assert
-    const commmandBarElement = screen.getByTestId(COLLECTION_EXPLORER_COMMAND_BAR_TESTID);
-    expect(commmandBarElement).toBeTruthy();
-});
-
 describe("Load Collection Dialogue", ()=> {
     it("displays a collection load file input when load button is selected", async ()=> {
         // arrange
         render(<CollectionExplorer />);
-        const loadButton = await screen.findByText("Load");
+        const loadButton = await screen.findByLabelText("Load");
         fireEvent.click(loadButton);
         await waitFor(()=> screen.getByRole("dialog"));
     
         // act
-        const fileInput = screen.getByTestId("loadCollectionInput");
+        const fileInput = screen.getByTestId(LOADDIALOG_TESTIDS.FILE_INPUT);
     
         // assert
         expect(fileInput).toBeInTheDocument();
@@ -60,7 +49,7 @@ describe("Load Collection Dialogue", ()=> {
 
         // arrange
         render(<CollectionExplorer />);
-        const loadButton = await screen.findByText("Load");
+        const loadButton = await screen.findByLabelText("Load");
         fireEvent.click(loadButton);
         waitFor(()=> screen.getByRole("dialog"));
 
@@ -90,12 +79,12 @@ describe("Load Collection Dialogue", ()=> {
 
         // arrange
         render(<CollectionExplorer />);
-        const loadButton = await screen.findByText("Load");
+        const loadButton = await screen.findByLabelText("Load");
         fireEvent.click(loadButton);
         await waitFor(()=> screen.getByRole("dialog"));
 
         // act
-        const fileInput : HTMLInputElement = await screen.getByTestId("loadCollectionInput") as HTMLInputElement;
+        const fileInput : HTMLInputElement = await screen.getByTestId(LOADDIALOG_TESTIDS.FILE_INPUT) as HTMLInputElement;
         fireEvent.change(fileInput, {
             target: {
                 files: [testFile]
@@ -110,7 +99,7 @@ describe("Load Collection Dialogue", ()=> {
     it("closes the load dialogue when the dialogue cancel button is selected", async ()=> {
         // arrange dialogue
         render(<CollectionExplorer />);
-        const loadButton = await screen.findByText("Load");
+        const loadButton = await screen.findByLabelText("Load");
         fireEvent.click(loadButton);
         waitFor(()=> screen.getByRole("dialog"));
 
