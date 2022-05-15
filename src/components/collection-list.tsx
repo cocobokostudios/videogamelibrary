@@ -1,18 +1,14 @@
-import * as React from "react";
-import { DetailsList, DetailsListLayoutMode, IColumn, registerOnThemeChangeCallback, SelectionMode } from "@fluentui/react";
+import React from "react";
+import ReactDOM from "react-dom";
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
 
 import Game from "../models/game";
-import Collection from "../models/collection";
-import { PrimaryButton } from "@fluentui/react";
-import { useBoolean } from "@fluentui/react-hooks";
-import CollectionController from "../controllers/collection-controller";
 
 export interface ICollectionListProps {
-    title: string
     items: Array<Game>
 }
 
-const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ items, title }) => {
+const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ items }) => {
     const defaultColumns: IColumn[] = [
         {
             key: "platformCol",
@@ -77,7 +73,6 @@ const CollectionList : React.FunctionComponent<ICollectionListProps> = ({ items,
             }
         }
     ];
-
     const [columns, setColumns] = React.useState(defaultColumns);
 
     return (

@@ -3,6 +3,7 @@ import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps, DialogFo
 import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
+import CollectionLoadDialogue from "./collection-load-dialogue";
 import CollectionController from "../controllers/collection-controller";
 import CollectionList from "./collection-list";
 import Collection from "../models/collection";
@@ -13,22 +14,14 @@ export const COLLECTION_EXPLORER_COMMAND_BAR_TESTID = "collection-explorer_comma
 export const COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID = "collection-explorer_loadCollectionDialog";
 
 const CollectionExplorer : React.FunctionComponent = () =>  {
-    const [hideLoadDialog, { toggle: toggleHideLoadDialog }] = useBoolean(true);
-
+    // state
+    const [dialogueVisibility, { toggle: toggleDialogueVisibility }] = useBoolean(true);
     const [loadedCollection, setLoadedCollection] = React.useState<Collection>(new Collection("myLoadedCollection"));  
-
     const [activeCollection, setActiveCollection] = React.useState<Collection>(new Collection("myGameCollection"));
     const [isDefaultCollection, { toggle: toggleIsDefaultCollection, setTrue: setIsDefaultCollection, setFalse: unsetIsDefaultCollection }] = useBoolean(false);
 
-
-
-    const loadDialogContentProps: IDialogContentProps = {
-        title: "Load Collection",
-        showCloseButton: true,
-        closeButtonAriaLabel: "Close"
-    };
-
-    const onFileInputChange = async (e: React.SyntheticEvent) => {
+    // handlers
+    const onDialogueFileInputChange = async (e: React.SyntheticEvent) => {
         e.preventDefault();
 
         // check for files
@@ -39,7 +32,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         } 
     }
 
-    const loadButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const onDialogueLoadButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
         // update the collection
@@ -53,19 +46,17 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
 
         // clear loaded collection
         setLoadedCollection(new Collection("myLoadedCollection"));
-
         // close dialogue
-        toggleHideLoadDialog();
+        toggleDialogueVisibility();
     }
 
-    const cancelButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const onDialogueCancelButtonClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
         // clear loaded collection
         setLoadedCollection(new Collection("myLoadedCollection"));
-
         // close dialogue
-        toggleHideLoadDialog();
+        toggleDialogueVisibility();
     }
 
     // effect for loading default collection on mount
@@ -95,32 +86,23 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
                     <TextField value={activeCollection.id} underlined />
                 </section>
                 <section className={styles.right}>
-                    <IconButton iconProps={{ iconName: "Upload" }} onClick={toggleHideLoadDialog} />
+                    <IconButton iconProps={{ iconName: "Upload" }} onClick={toggleDialogueVisibility} />
                     <IconButton iconProps={{ iconName: "Download" }} />
                     <Toggle label={"Is Default"} checked={isDefaultCollection} inlineLabel onClick={toggleIsDefaultCollection} />
                 </section>
             </header>
             <main>
                 <CollectionList 
-                    title={activeCollection.id}
                     items={activeCollection.items} />
             </main>
         </section>
-        <Dialog
-            hidden={hideLoadDialog}
-            onDismiss={toggleHideLoadDialog}
-            dialogContentProps={loadDialogContentProps}>
-                Select a file to load your collection.
-                <input id="loadCollectionInput"
-                    data-testid="loadCollectionInput"
-                    type="file"
-                    accept="text/csv"
-                    onChange={onFileInputChange} />
-            <DialogFooter>
-                <PrimaryButton onClick={loadButtonClick} text="Load" />
-                <DefaultButton onClick={cancelButtonClick} text="Cancel" />
-            </DialogFooter>
-        </Dialog>
+        <CollectionLoadDialogue
+            hidden={dialogueVisibility}
+            onCancelClick={onDialogueCancelButtonClick}
+            onDismissClick={toggleDialogueVisibility}
+            onLoadClick={onDialogueLoadButtonClick}
+            onFileInputChange={onDialogueFileInputChange}
+            />
         </>
     )
 }
