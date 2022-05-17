@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor, screen, within, getAllByRole, fireEvent } from "@testing-library/react";
+import { cleanup, render, waitFor, screen, within, getAllByRole, fireEvent, waitForElementToBeRemoved } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
 import * as React from "react";
@@ -8,10 +8,12 @@ import testCollection from "../data/test-collection.json";
 
 import CollectionExplorer, { 
         COLLECTION_EXPLORER_COMMAND_BAR_TESTID,
-        COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID 
+        COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID,
+        COLLECTION_EXPLORER_TESTIDS 
     } from "../../src/components/collection-explorer";
 import { TESTIDS as LOADDIALOG_TESTIDS } from "../../src/components/collection-load-dialogue";
 import CollectionController from "../../src/controllers/collection-controller";
+import Collection from "../../src/models/collection";
 
 beforeEach(()=> {
     initializeIcons(undefined, { disableWarnings: true });
@@ -52,7 +54,7 @@ describe("Load Collection Dialogue", ()=> {
         render(<CollectionExplorer />);
         const loadButton = await screen.findByLabelText("Load");
         fireEvent.click(loadButton);
-        waitFor(()=> screen.getByRole("dialog"));
+        await waitFor(()=> screen.getByRole("dialog"));
 
         // act
         const fileInput : HTMLInputElement = screen.getByTestId("loadCollectionInput") as HTMLInputElement;
@@ -102,7 +104,7 @@ describe("Load Collection Dialogue", ()=> {
         render(<CollectionExplorer />);
         const loadButton = await screen.findByLabelText("Load");
         fireEvent.click(loadButton);
-        waitFor(()=> screen.getByRole("dialog"));
+        await waitFor(()=> screen.getByRole("dialog"));
 
         // act
         const cancelButton = await screen.findByText("Cancel");
@@ -118,41 +120,54 @@ describe("Default Collection", ()=> {
         // arrange, CollectionController spy
         const setDefaultCollectionSpy = jest.spyOn(CollectionController.getInstance(), "setDefaultCollection");
 
-        // arrange file content
-        const testFileId = "test-collection";
-        const testFileContent = `
-            gameId,title,platformId
-            invalid-entry_snes,,snes
-            ,,nes
-            another_entry,title
-            valid-game_snes,Valid Game,snes
-        `.trim();
-        const testFile = new File([testFileContent], `${testFileId}.csv`, {type: "text/csv"});
-        testFile.text = jest.fn(()=> Promise.resolve(testFileContent)); // mock text function, because it does not exist in JSDOM
-
-        // arrange, active collection
-        render(<CollectionExplorer />);
-        const loadButton = await screen.findByLabelText("Load");
-        fireEvent.click(loadButton);
-        waitFor(()=> screen.getByRole("dialog"));
-        const fileInput : HTMLInputElement = await screen.getByTestId(LOADDIALOG_TESTIDS.FILE_INPUT) as HTMLInputElement;
-        fireEvent.change(fileInput, {
-            target: {
-                files: [testFile]
-            }
-        });
-        fireEvent.click(loadButton);
-
         // act
-        const defaultCollectionToggle = await screen.findByLabelText("Set as default collection");
+        render(<CollectionExplorer />);
+        const defaultCollectionToggle = await screen.findByLabelText(/Set as default collection/i);
         fireEvent.click(defaultCollectionToggle);
 
         // assert
         expect(defaultCollectionToggle).toBeChecked();
-        expect(setDefaultCollectionSpy).toHaveBeenCalledWith(testFileId);
+        expect(setDefaultCollectionSpy).toHaveBeenCalled();
     });
 
-    it.todo("clears the default collection when the default collection checkbox is unchecked");
-    it.todo("loads the default collection on startup if one is set");
-    it.todo("checks the default collection checkbox if a default collection with a matching ID is set as the active collection ");
+    it("clears the default collection when the default collection checkbox is unchecked", async ()=> {
+        // arrange, default collection ID in storage
+        const testCollectionId = "testCollectionId"
+        localStorage.setItem("vgl_config_defaultCollection", testCollectionId);
+        // arrange, default collection content
+        const testCollectionContent = new Collection(testCollectionId);
+        localStorage.setItem(`vgl_collection_${testCollectionId}`, JSON.stringify(testCollectionContent));
+
+        // arrange, CollectionController spy
+        const clearDefaultCollectionSpy = jest.spyOn(CollectionController.getInstance(), "clearDefaultCollection");
+
+        // arrange, default collection checkbox
+        render(<CollectionExplorer />);
+        const defaultCollectionToggle = await screen.findByLabelText(/Set as default collection/i);
+        expect(defaultCollectionToggle).toBeChecked();  // verify default collection is checked
+
+        // act
+        fireEvent.click(defaultCollectionToggle);
+
+        // assert
+        expect(defaultCollectionToggle).not.toBeChecked();
+        expect(clearDefaultCollectionSpy).toHaveBeenCalled();
+    });
+
+    it("loads the default collection on startup if one is set", async ()=> {
+        // arrange, default collection ID in storage
+        const testCollectionId = "testCollectionId"
+        localStorage.setItem("vgl_config_defaultCollection", testCollectionId);
+
+        // arrange, default collection content
+        const testCollectionContent = new Collection(testCollectionId);
+        localStorage.setItem(`vgl_collection_${testCollectionId}`, JSON.stringify(testCollectionContent));
+
+        // act
+        render(<CollectionExplorer />);
+        const defaultCollectionToggle = await screen.findByLabelText(/Set as default collection/i);
+
+        // assert
+        expect(defaultCollectionToggle).toBeChecked();
+    });
 });

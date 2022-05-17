@@ -3,7 +3,7 @@ import { CommandBar, ICommandBarItemProps, Dialog, IDialogContentProps, DialogFo
 import { useBoolean } from "@fluentui/react-hooks";
 
 import styles from "../styles/collection-explorer.module.css";
-import CollectionLoadDialogue from "./collection-load-dialogue";
+import CollectionLoadDialogue, { TESTIDS } from "./collection-load-dialogue";
 import CollectionController from "../controllers/collection-controller";
 import CollectionList from "./collection-list";
 import Collection from "../models/collection";
@@ -12,6 +12,9 @@ import Game from "../models/game";
 export const COLLECTION_EXPLORER_TESTID = "collection-explorer";
 export const COLLECTION_EXPLORER_COMMAND_BAR_TESTID = "collection-explorer_commandbar";
 export const COLLECTION_EXPLORER_LOAD_COLLECTION_DIALOG_TESTID = "collection-explorer_loadCollectionDialog";
+export const COLLECTION_EXPLORER_TESTIDS = {
+    COLLECTION_NAME_DISPLAY: "collectionNameDisplay",
+}
 
 const CollectionExplorer : React.FunctionComponent = () =>  {
     // state
@@ -83,12 +86,15 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         <section data-testid={COLLECTION_EXPLORER_TESTID} className={styles.CollectionExplorer} >
             <header>
                 <section className={styles.left}>
-                    <TextField value={activeCollection.id} underlined />
+                    <TextField data-testid={COLLECTION_EXPLORER_TESTIDS.COLLECTION_NAME_DISPLAY} 
+                        value={activeCollection.id} 
+                        underlined
+                        readOnly />
                 </section>
                 <section className={styles.right}>
                     <IconButton ariaLabel="Load" iconProps={{ iconName: "Upload" }} onClick={toggleDialogueVisibility} />
                     <IconButton ariaLabel="Export" iconProps={{ iconName: "Download" }} />
-                    <Toggle label={"Is Default"} checked={isDefaultCollection} inlineLabel onClick={toggleIsDefaultCollection} />
+                    <Toggle label="Default Collection" ariaLabel="Set as Default Collection" checked={isDefaultCollection} inlineLabel onClick={toggleIsDefaultCollection} />
                 </section>
             </header>
             <main>
