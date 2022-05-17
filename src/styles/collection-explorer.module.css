@@ -2,6 +2,29 @@
     background-color: blueviolet;
 }
 
+.CollectionExplorer header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem;
+}
+
+.left {
+  display: flex;
+  flex-direction: row;
+}
+
+.right {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  align-items: center;
+}
+
+.right > *, .left > * {
+  margin-bottom: 0;
+}
+
 @media screen and (min-width: 768px) {
     .CollectionExplorer  {
       background-color: coral;
