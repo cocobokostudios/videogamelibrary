@@ -182,7 +182,7 @@ describe("Read Collection File", ()=> {
         const target = CollectionController.getInstance();
 
         // act
-        const result : Collection = await target.loadCollectionFromFile(testFile);
+        const result : Collection = await target.importCollectionFromFile(testFile);
 
         // assert
         expect(result.id).toEqual(testCollectionId);
@@ -210,7 +210,7 @@ describe("Read Collection File", ()=> {
         const target = CollectionController.resetInstance(mockLogger);
 
         // act
-        const result : Collection = await target.loadCollectionFromFile(testFile);
+        const result : Collection = await target.importCollectionFromFile(testFile);
 ``
         // assert
         expect(result.id).toEqual(testCollectionId);

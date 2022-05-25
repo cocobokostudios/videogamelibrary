@@ -31,7 +31,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         const fileInput: HTMLInputElement = e.currentTarget as HTMLInputElement;
         if(fileInput && fileInput.files) {
             const files: FileList = fileInput.files;
-            setLoadedCollection(await CollectionController.getInstance().loadCollectionFromFile(files[0]));
+            setLoadedCollection(await CollectionController.getInstance().importCollectionFromFile(files[0]));
         } 
     }
 

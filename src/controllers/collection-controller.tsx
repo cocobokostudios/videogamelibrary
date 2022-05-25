@@ -57,12 +57,12 @@ class CollectionController {
      *      setLoadedCollection(await CollectionController.getInstance().loadCollectionFromFile(files[0]));
      *  } 
      */
-    async loadCollectionFromFile(file: File) : Promise<Collection> {
+    async importCollectionFromFile(file: File) : Promise<Collection> {
         const fileContent = await file.text();
 
         // TODO: Add logic to support other file types
         const collectionId = file.name.split(".")[0];
-        return this.loadCollectionFromCSV(collectionId, fileContent);
+        return this.importCollectionFromCSV(collectionId, fileContent);
     }
 
     /**
@@ -74,7 +74,7 @@ class CollectionController {
      *  const result = await loadCollectionFromCSV(`myCollectionId`, myCSVContent);
      *  
      */
-    async loadCollectionFromCSV(collectionId: string, collection: string) : Promise<Collection> {
+    async importCollectionFromCSV(collectionId: string, collection: string) : Promise<Collection> {
         const parsedCollection: Array<Game> = [];
         const parserOptions : Papa.ParseConfig = {
             header: true,
