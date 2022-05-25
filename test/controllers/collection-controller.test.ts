@@ -166,7 +166,7 @@ describe("Load Collection", ()=> {
     });
 });
 
-describe("Read Collection File", ()=> {  
+describe("Import Collection File", ()=> {  
     it("parses CSV file into Game objects", async ()=> {
         // arrange
         const testCollectionId = "testCollection";
@@ -217,4 +217,9 @@ describe("Read Collection File", ()=> {
         expect(result.items.length).toEqual(4);
         expect(mockLogger.warn).toBeCalledTimes(3);
     });
+});
+
+describe("Export Collection File", ()=> {
+    it.todo("generates a CSV file with all games as rows and IGame members as columns");
+    it.todo("sets the default file name as the collection ID");
 });
