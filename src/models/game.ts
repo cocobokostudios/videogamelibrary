@@ -14,20 +14,20 @@ export interface IGame {
 }
 
 /**
- * Creates a Game object that represents a game in a collection.
+ * Creates a Game object that represents a game in a collection. Use static method `create` to retrieve singleton instance.
  * @class
- * 
+ * @member {string} title The title of the game that is displayed in user interfaces 
+ * @member {string} platformId Unique identifier that references the platform the game runs on
+ * @member {string} regionId Unique identifier that references the region the game is for
+ * @member {string} price The record CAD value of the game. Defaults to Number.NaN if left unset.
+ * @see create
  */
 class Game implements IGame {
-    /** @member {string} gameId Unique identifier for the game */
+    
     public gameId: string;
-    /** @member {string} title The title of the game that is displayed in user interfaces */
     public title: string;
-    /** @member {string} platformId Unique identifier that references the platform the game runs on  */
     public platformId: string;
-    /** @member {string} regionId Unique identifier that references the region the game is for  */
     public regionId: string;
-    /** @member {string} price The record CAD value of the game. Defaults to Number.NaN if left unset.  */
     public price: number;
     
     private logger: ILogger = ConsoleLogger.getInstance();
@@ -40,6 +40,11 @@ class Game implements IGame {
         this.price = price;
     }
 
+    /**
+     * 
+     * @param game IGame object to use pull data fields from.
+     * @returns Game object
+     */
     static create(game: IGame) : Game {
         if(game.price !== null) {
             return new Game(game.gameId, game.title, game.platformId, game.regionId, game.price);
@@ -65,6 +70,16 @@ class Game implements IGame {
         return isValid;
     }
 
+    /**
+     * Serialize the object to a data transfer object that contains only the data fields and their values. Use @function serializeArray for collections of game objects.
+     * @returns IGame data transfer object with only the populated data fields.
+     * @example
+     *  const myIGame = game.serialize();
+     *  const jsonGameData = JSON.stringify(myIGame);
+     *  console.log(`This is the JSON data: ${jsonGameData}.`);
+     * @see serializeArray
+     * @returns {IGame} object containing data field values
+     */
     public serialize() : IGame {
         const gameData : IGame = {
             gameId: this.gameId,
@@ -76,10 +91,30 @@ class Game implements IGame {
         return gameData;
     }
 
+    /**
+     * Serialize the object to a data transfer object that contains only the data fields and their values. Use @function serializeArray for collections of game objects.
+     * @returns IGame data transfer object with only the populated data fields.
+     * @example
+     *  const myGame = game.serialize();
+     *  const jsonGameData = JSON.stringify(myIGame);
+     *  console.log(`This is the JSON data: ${jsonGameData}.`);
+     * @see serializeArray
+     * @returns {IGame} object containing data field values
+     */
     static serialize(game: Game) : IGame {
         return game.serialize();
     }
 
+    /**
+     * Turns array of Games into IGame objects containing only data field values.
+     * @param games Array of Game objects.
+     * @returns {Array<IGame>} Array of IGame objects, containing only data values.
+     * @example
+     *  const dataObject : ICollection = {
+     *     id: this.id,
+     *      items: Game.serializeArray(this.items)
+     *  }
+     */
     static serializeArray(games: Array<Game>) : Array<IGame> {
         return games.map<IGame>((g: Game)=> Game.serialize(g));
     }

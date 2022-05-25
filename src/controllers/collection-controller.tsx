@@ -4,21 +4,19 @@ import ConsoleLogger from "../utils/ConsoleLogger";
 import ILogger from "../utils/ILogger";
 
 import Papa from "papaparse";
-import { PanelType } from "@fluentui/react";
 
+/**
+ * @class
+ */
 class CollectionController {
     public static readonly STORAGE_PREFIX = "vgl";
     private static readonly DEFAULT_COLLECTION_STORAGE_KEY = `vgl_config_defaultCollection`;
 
     private constructor(logger: ILogger = ConsoleLogger.getInstance()) { 
-        this.collection = new Array<Game>();
         this.logger = logger;
-        
     }   
     private static instance: CollectionController;
-
-    public collection: Array<Game>;
-    public readonly logger: ILogger;
+    private readonly logger: ILogger;
     
     /**
      * Gets or intializes the singleton instance of the CollectionController.
@@ -34,6 +32,7 @@ class CollectionController {
 
     /**
      * Resets the current instance of CollectionController to a new instance.
+     * @param {ILogger} logger Object to use to log. Defaults to {@type ConsoleLogger}
      * @returns {@type CollectionController} Returns the instance of CollectionCollection, same as {@function getInstance} would.
      * @see {@function getInstance} for retrieving instance.
      */
@@ -50,7 +49,13 @@ class CollectionController {
 
     /**
      * @param {File} file CSV File object from FileList containing collection data.
-     * @returns {Array<Game>} Returns the collection of {@type Game} objects loaded from the provided file.
+     * @returns {Promise<Collection>} Collection object parsed from the CSV file.
+     * @example
+     *  const fileInput: HTMLInputElement = e.currentTarget as HTMLInputElement;
+     *  if(fileInput && fileInput.files) {
+     *      const files: FileList = fileInput.files;
+     *      setLoadedCollection(await CollectionController.getInstance().loadCollectionFromFile(files[0]));
+     *  } 
      */
     async loadCollectionFromFile(file: File) : Promise<Collection> {
         const fileContent = await file.text();
@@ -63,7 +68,11 @@ class CollectionController {
     /**
      * 
      * @param collection CSV file contents
-     * @returns {Array<Game>} Array of {@type Game} objects, which are the collection loaded from the CSV string.
+     * @returns {Promise<Collection>} Collection object parsed from the CSV file.
+     * @example
+     *  const myCSVContent = `...`;
+     *  const result = await loadCollectionFromCSV(`myCollectionId`, myCSVContent);
+     *  
      */
     async loadCollectionFromCSV(collectionId: string, collection: string) : Promise<Collection> {
         const parsedCollection: Array<Game> = [];
@@ -93,6 +102,7 @@ class CollectionController {
      * Generate a key used to save and load the collection from storage.
      * @param collectionId ID of the @type {Collection} collection.
      * @returns {string} Storage key value
+     * @private
      */
     private generateCollectionStorageKey(collectionId: string) {
         return `vgl_collection_${collectionId}`;
@@ -102,6 +112,14 @@ class CollectionController {
      * Replaces current collection with the provided Array.
      * @param collection {Array<Game>} Array of {@type Game} objects to replace the current collection.
      * @returns {number} Number of invalid game objects from imported collection.
+     * @example
+     *  const result = loadCollection(`myCollectionId`);
+     *  if(result !== undefined) {
+     *      console.log(`collection of games found ${...result}`);
+     *  }
+     *  else {
+     *      console.error(`no collection found`);
+     *  }
      */
     loadCollection(collectionId: string) : Collection | undefined {
         const storageKey = this.generateCollectionStorageKey(collectionId);
@@ -134,6 +152,9 @@ class CollectionController {
      * Saves collection in memory to local storage.
      * @param {Collection} collection The collection of games to save to storage.
      * @returns {void}
+     * @example
+     *  const myColl = new Collection(`myAwesomeCollection`,[]);
+     *  saveCollection(myColl);
      */
     saveCollection(collection: Collection) {
         const storageKey = this.generateCollectionStorageKey(collection.id);
@@ -144,6 +165,8 @@ class CollectionController {
      * Stores the collectionId value as one to use when loading the default collection from storage.
      * @param collectionId ID value associated with the collection. Used for retrieving the collection.
      * @returns {void}
+     * @example
+     *  setDefaultCollection(`myAwesomeCollection`);
      */
     setDefaultCollection(collectionId: string) {
         localStorage.setItem(CollectionController.DEFAULT_COLLECTION_STORAGE_KEY, collectionId);
@@ -151,6 +174,8 @@ class CollectionController {
 
     /**
      * Clear the default collection value in storage.
+     * @example
+     *  clearDefaultCollection();
      */
     clearDefaultCollection() : void {
         localStorage.removeItem(CollectionController.DEFAULT_COLLECTION_STORAGE_KEY);

@@ -38,15 +38,6 @@ it("can have the singleton instance reset", ()=> {
     expect(Object.is(previous, updated)).toBe(false);
 });
 
-it("initializes with an empty collection", ()=> {
-    // arrange & act
-    const target = CollectionController.getInstance();
-
-    // act
-    expect(target.collection).toBeTruthy();
-    expect(target.collection.length).toEqual(0);
-});
-
 describe("Save Collection", ()=> {
     it("saves the collection to local storage", ()=> {
         // arrange

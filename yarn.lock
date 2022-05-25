@@ -4320,6 +4320,11 @@ lz-string@^1.4.4:
   resolved "https://registry.npmjs.org/lz-string/-/lz-string-1.4.4.tgz"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
+madr@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/madr/-/madr-2.1.2.tgz#0cd604e858d51f8e2be5ca573c887879063909fb"
+  integrity sha512-n+dkvy8NMMIHEMp2qaOQfxiy1Zqs5UfygEw1hqmBYqQdMgnVZSrS2BWN9NThzoHKWuFnhyWwmy0ls6k5XZ03Gg==
+
 make-dir@^2.1.0:
   version "2.1.0"
   resolved "https://registry.npmjs.org/make-dir/-/make-dir-2.1.0.tgz"
