@@ -57,12 +57,12 @@ class CollectionController {
      *      setLoadedCollection(await CollectionController.getInstance().loadCollectionFromFile(files[0]));
      *  } 
      */
-    async importCollectionFromFile(file: File) : Promise<Collection> {
+    async importFromFile(file: File) : Promise<Collection> {
         const fileContent = await file.text();
 
         // TODO: Add logic to support other file types
         const collectionId = file.name.split(".")[0];
-        return this.importCollectionFromCSV(collectionId, fileContent);
+        return this.importFromCSV(collectionId, fileContent);
     }
 
     /**
@@ -74,7 +74,7 @@ class CollectionController {
      *  const result = await loadCollectionFromCSV(`myCollectionId`, myCSVContent);
      *  
      */
-    async importCollectionFromCSV(collectionId: string, collection: string) : Promise<Collection> {
+    async importFromCSV(collectionId: string, collection: string) : Promise<Collection> {
         const parsedCollection: Array<Game> = [];
         const parserOptions : Papa.ParseConfig = {
             header: true,
@@ -96,6 +96,26 @@ class CollectionController {
         
         Papa.parse(collection, parserOptions);
         return new Collection(collectionId, parsedCollection);
+    }
+
+    /**
+     * Export a collection to CSV, delimited by ";"
+     * @param collection The collection to export.
+     * @returns 
+     */
+    exportToCSV(collection: Collection) : HTMLAnchorElement {
+        const collectionData = collection.serialize();
+        const parserOptions : Papa.UnparseConfig = {
+            delimiter: ';',
+            header: true
+        };
+        const csvData = Papa.unparse<IGame>(collectionData.items, parserOptions);
+        
+        const downloadLink = document.createElement("a");
+        downloadLink.href = URL.createObjectURL(new Blob([csvData], {type: "text/csv"}));
+        downloadLink.download = `${collection.id}.csv`;
+
+        return downloadLink;
     }
 
     /**
