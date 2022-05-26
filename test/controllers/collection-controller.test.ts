@@ -166,7 +166,7 @@ describe("Load Collection", ()=> {
     });
 });
 
-describe("Read Collection File", ()=> {  
+describe("Import Collection File", ()=> {  
     it("parses CSV file into Game objects", async ()=> {
         // arrange
         const testCollectionId = "testCollection";
@@ -182,7 +182,7 @@ describe("Read Collection File", ()=> {
         const target = CollectionController.getInstance();
 
         // act
-        const result : Collection = await target.loadCollectionFromFile(testFile);
+        const result : Collection = await target.importFromFile(testFile);
 
         // assert
         expect(result.id).toEqual(testCollectionId);
@@ -195,7 +195,7 @@ describe("Read Collection File", ()=> {
 
     it("logs CSV entries unable to be parsed as warnings", async ()=> {
         // arrange file withone valid entry
-        const testCollectionId = "testCollection";
+        const testCollectionId = "testCollection"; 
         const testFileContent = `
             gameId,title,platformId,regionId
             invalid-entry_snes,,snes
@@ -210,11 +210,36 @@ describe("Read Collection File", ()=> {
         const target = CollectionController.resetInstance(mockLogger);
 
         // act
-        const result : Collection = await target.loadCollectionFromFile(testFile);
+        const result : Collection = await target.importFromFile(testFile);
 ``
         // assert
         expect(result.id).toEqual(testCollectionId);
         expect(result.items.length).toEqual(4);
         expect(mockLogger.warn).toBeCalledTimes(3);
+    });
+});
+
+describe("Export Collection File", ()=> {
+    it("returns an anchor element with object url and collection ID as file name", ()=> {
+        // arrange, mock
+        URL.createObjectURL = jest.fn(()=> `blob:https://www.test.com/12312-12312-12312-12312`);
+        // arrange, data
+        const testCollectionId = "testCollection";
+        const testCollectionItems : Array<Game> = [
+            new Game("game1_snes", "Game One", "snes", "na"),
+            new Game("game2_snes", "Game Two", "snes", "na"),
+            new Game("game3_snes", "Game Three", "snes", "na")
+        ];
+        const testCollection = new Collection(testCollectionId, testCollectionItems);
+
+        // arrange, controller
+        const target = CollectionController.getInstance();
+
+        // act
+        const result : HTMLAnchorElement = target.exportToCSV(testCollection);
+
+        // assert
+        expect(result.href).toMatch(/^blob:https/i);
+        expect(result.download).toContain(`${testCollectionId}.csv`);
     });
 });
