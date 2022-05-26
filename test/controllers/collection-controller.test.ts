@@ -195,7 +195,7 @@ describe("Import Collection File", ()=> {
 
     it("logs CSV entries unable to be parsed as warnings", async ()=> {
         // arrange file withone valid entry
-        const testCollectionId = "testCollection";
+        const testCollectionId = "testCollection"; 
         const testFileContent = `
             gameId,title,platformId,regionId
             invalid-entry_snes,,snes

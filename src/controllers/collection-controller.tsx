@@ -106,7 +106,7 @@ class CollectionController {
     exportToCSV(collection: Collection) : HTMLAnchorElement {
         const collectionData = collection.serialize();
         const parserOptions : Papa.UnparseConfig = {
-            delimiter: ';',
+            delimiter: ',',
             header: true
         };
         const csvData = Papa.unparse<IGame>(collectionData.items, parserOptions);

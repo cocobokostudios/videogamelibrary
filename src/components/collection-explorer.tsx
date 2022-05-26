@@ -62,6 +62,13 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         toggleDialogueVisibility();
     }
 
+    const onCollectionExportClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        
+        const csvAnchor = CollectionController.getInstance().exportToCSV(activeCollection);
+        csvAnchor.click();
+    }
+
     // effect for loading default collection on mount
     React.useEffect(() => {
         const defaultCollection = CollectionController.getInstance().loadDefaultCollection();
@@ -93,7 +100,7 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
                 </section>
                 <section className={styles.right}>
                     <IconButton ariaLabel="Load" iconProps={{ iconName: "Upload" }} onClick={toggleDialogueVisibility} />
-                    <IconButton ariaLabel="Export" iconProps={{ iconName: "Download" }} />
+                    <IconButton ariaLabel="Export" iconProps={{ iconName: "Download" }} onClick={onCollectionExportClick} />
                     <Toggle label="Default Collection" ariaLabel="Set as Default Collection" checked={isDefaultCollection} inlineLabel onClick={toggleIsDefaultCollection} />
                 </section>
             </header>
