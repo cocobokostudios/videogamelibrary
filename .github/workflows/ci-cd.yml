@@ -5,8 +5,8 @@ on:
     branches:
       - main
       - rc/**
-    paths:
-      - '!docs/**'
+    paths-ignore:
+      - 'docs/adr/**'
 
 env:
   STATICWEBAPPNAME: vgl-app
