@@ -1,16 +1,12 @@
 name: CI/CD
 on:
-  push:
-    paths-ignore:
-      - 'docs/**'
-    branches:
-      - rc/*
-      - ft/*
-      - hf/*
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+      - rc/**
+    paths:
+      - '!docs/**'
 
 env:
   STATICWEBAPPNAME: vgl-app
