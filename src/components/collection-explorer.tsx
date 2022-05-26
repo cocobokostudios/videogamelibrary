@@ -88,6 +88,11 @@ const CollectionExplorer : React.FunctionComponent = () =>  {
         }
     }, [isDefaultCollection]);
 
+    // effect for changing loaded collection
+    React.useEffect(()=> {
+        CollectionController.getInstance().saveCollection(loadedCollection);
+    }, [loadedCollection]);
+
     return (
         <>
         <section data-testid={COLLECTION_EXPLORER_TESTID} className={styles.CollectionExplorer} >
