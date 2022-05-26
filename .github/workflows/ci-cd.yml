@@ -4,7 +4,9 @@ on:
     paths-ignore:
       - 'docs/**'
     branches:
-      - main
+      - rc/*
+      - ft/*
+      - hf/*
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
@@ -16,6 +18,7 @@ env:
 jobs:
   build:
     name: Build
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -61,22 +64,6 @@ jobs:
         app_build_command: 'yarn run build'
         app_location: '.' # App source code path
         output_location: './dist' # Built app content directory - optional
-
-    - name: Get Preview URL
-      id: static_web_app_preview_url
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          DEFAULTHOSTNAME=$(az staticwebapp show -n '${{ env.STATICWEBAPPNAME }}' | jq -r '.defaultHostname')
-          echo $DEFAULTHOSTNAME
-
-          PREVIEW_URL="https://${DEFAULTHOSTNAME/.[1-9]./-${{github.event.pull_request.number }}.${{ env.LOCATION }}.1.}"
-          echo $PREVIEW_URL
-
-          echo "::set-output name=PREVIEW_URL::$PREVIEW_URL"
-
-    outputs:
-      preview-url: ${{steps.static_web_app_preview_url.outputs.PREVIEW_URL}}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
